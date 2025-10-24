@@ -1,4 +1,5 @@
 INCLUDE "man/entity_manager.inc"
+INCLUDE "utils/constants.inc"
 
 SECTION "Entity Manager Data", WRAM0[$C000]
 
@@ -27,7 +28,13 @@ ball_rand: DS 1
 
 ; Periodic burst spawner counters
 ball_burst_frame_count: DS 1   ; 0..59 frames
-ball_burst_seconds: DS 1 
+ball_burst_seconds: DS 1       ; seconds counter
+; last spawn X (for separation)
+ball_last_spawn_x: DS 1
+; last spawn index for preset table
+ball_last_spawn_index: DS 1
+; rng tick mixes into RNG each frame to avoid periodic repeats
+rng_tick: DS 1
 
 SECTION "Entity Manager Code", ROM0
 
@@ -38,9 +45,32 @@ man_entity_init::
 	ld [alive_entities], a
 
 	;; no spawn-related flags to clear
-		;; initialize RNG seed for ball spawn
+	;; initialize RNG seed for ball spawn: mix with current LY
 	ld hl, ball_rand
-	ld a, $55
+	ld a, [rLY]
+	xor $55
+	or a
+	jr nz, .seed_ok
+	ld a, $7B          ; ensure non-zero seed to avoid LFSR lock
+.seed_ok:
+	ld [hl], a
+
+	;; initialize burst counters
+	ld hl, ball_burst_frame_count
+	xor a
+	ld [hl], a
+	ld hl, ball_burst_seconds
+	ld [hl], a
+    ; init last spawn x marker to 0xFF (none)
+    ld hl, ball_last_spawn_x
+    ld a, $FF
+    ld [hl], a
+	; init last spawn index marker to 0xFF (none)
+	ld hl, ball_last_spawn_index
+	ld [hl], a
+	; init rng tick to 0
+	ld hl, rng_tick
+	xor a
 	ld [hl], a
   
   .zero_cmps_info

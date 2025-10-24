@@ -60,3 +60,55 @@ rand8::
 .no_xor:
 	ld [hl], a
 	ret
+
+; -------------------------------------------------------
+; mul8_high: high byte of 8-bit * 8-bit multiply
+; In:  A = multiplicand, B = multiplier
+; Out: A = high byte of (A*B)
+; Clobbers: C, H, L
+mul8_high::
+	; In: A = multiplicand, B = multiplier
+	; Out: A = high byte of (A*B)
+	ld h, 0
+	ld l, 0
+	ld c, 8
+.mul_loop:
+	bit 0, a
+	jr z, .no_add
+	; HL += B
+	ld e, l
+	ld d, h
+	ld a, e
+	add a, b
+	ld l, a
+	ld a, d
+	adc a, 0
+	ld h, a
+.no_add:
+	; B <<= 1, A >>= 1
+	sla b
+	srl a
+	dec c
+	jr nz, .mul_loop
+	ld a, h
+	ret
+
+; -------------------------------------------------------
+; rand_range: returns a random integer in [min, max]
+; In:  D = min, E = max
+; Out: A = random value in range
+; Clobbers: B
+rand_range::
+	; Compute n = (max - min + 1) in B
+	ld a, e
+	sub d
+	inc a
+	ld b, a
+	ld c, b          ; save n in C (rand8 clobbers B)
+	; Get random byte r in A
+	call rand8
+	ld b, c          ; restore n to B for multiply
+	; Multiply high byte: (r * n) >> 8
+	call mul8_high
+	add a, d
+	ret

@@ -6,6 +6,13 @@ SECTION "Input System", ROM0
 
 process_spawns::
 	;; Every SPAWN_BURST_SECONDS seconds, spawn SPAWN_BURST_COUNT balls
+	;; Mix RNG each frame to avoid periodic repeats
+	ld hl, rng_tick
+	inc [hl]
+	ld a, [hl]
+	ld hl, ball_rand
+	add [hl]
+	ld [hl], a
 	;; Increment frame counter
 	ld hl, ball_burst_frame_count
 	inc [hl]
@@ -22,10 +29,22 @@ process_spawns::
 	cp SPAWN_BURST_SECONDS
 	jr nz, .no_burst
 
-	;; time to spawn a burst of SPAWN_BURST_COUNT balls
+	;; time to spawn a burst, but cap by MAX_BALLS
 	xor a
 	ld [hl], a        ; reset seconds to 0
+	; compute capacity = MAX_BALLS - current_ball_count
+	call count_balls
+	ld c, a                 ; c = current balls
+	ld a, MAX_BALLS
+	sub c
+	jr z, .no_burst         ; capacity == 0
+	jr c, .no_burst         ; capacity < 0 (shouldn't happen with unsigned)
+	; choose b = min(SPAWN_BURST_COUNT, capacity)
 	ld b, SPAWN_BURST_COUNT
+	cp b
+	jr nc, .have_quota      ; if capacity >= SPAWN_BURST_COUNT, keep b
+	ld b, a                 ; else b = capacity
+.have_quota:
 .burst_loop:
 	push bc
 	call spawn_ball_random
@@ -37,19 +56,8 @@ process_spawns::
 	ret
 
 
-;; spawn_ball_random: create a ball entity at a random X (0..152)
+;; spawn_ball_random: create a ball entity at a random X
 spawn_ball_random::
-	;; use GA-style rand8 (LFSR) to get random byte
-	call rand8
-
-	;; derive X from lower 7 bits and clamp to 0..152
-	and %01111111            ; 0..127
-	cp 152
-	jr c, .ok_x              ; if a < 152 keep it
-	ld a, 152
-.ok_x:
-	ld e, a
-
 	;; copy ROM template sc_ball_entity -> temp_entity (12 bytes)
 	ld hl, sc_ball_entity
 	ld de, temp_entity
@@ -60,10 +68,46 @@ spawn_ball_random::
 	ld hl, temp_entity
 	ld bc, 4
 	add hl, bc
-	ld [hl], 16    ;; visible near top of screen
+	ld [hl], SPAWN_Y_START    ;; visible near top of screen
 	inc hl
-	ld a, e
-	ld [hl], a     ;; X
+	; Preserve pointer to X on the stack while we compute the random index
+	push hl
+	;; Stir RNG seed with rDIV for better variation, then advance LFSR
+	ld hl, ball_rand
+	ld a, [hl]
+	ld b, a
+	ld a, [rDIV]
+	xor b
+	ld [hl], a
+	call rand8                   ; advance LFSR state
+	ld d, 0
+	ld e, BALL_SPAWN_POS_COUNT-1
+	call rand_range              ; A = index
+	; Avoid repeating same slot consecutively
+	push af
+	ld hl, ball_last_spawn_index
+	ld c, [hl]
+	pop af
+	cp c
+	jr nz, .idx_ok
+	inc a                        ; pick next slot
+	cp BALL_SPAWN_POS_COUNT
+	jr c, .idx_ok
+	xor a                        ; wrap to 0
+.idx_ok:
+	; Store last index
+	push af
+	ld hl, ball_last_spawn_index
+	pop af
+	ld [hl], a
+	; Load X from table and write it
+	ld hl, ball_spawn_positions_x
+	ld c, a
+	ld b, 0
+	add hl, bc
+	ld a, [hl]
+	pop hl                       ; restore pointer to X
+	ld [hl], a                   ; write X
 
 	;; patch physics at temp_entity + 8 (vy, vx)
 	ld hl, temp_entity
@@ -127,4 +171,35 @@ read_input_and_apply::
 
 
 	;; Button-based spawn removed; only movement handled here
+	ret
+
+
+;; count_balls: returns the number of active ball entities in A (by TAG)
+count_balls::
+	xor a
+	ld c, a                 ; c = count
+	ld e, 0
+.cb_loop:
+	; check VALID_ENTITY in components_info
+	ld h, CMP_INFO_H
+	ld l, e
+	ld a, [hl]
+	and VALID_ENTITY
+	cp VALID_ENTITY
+	jr nz, .cb_next
+	; check TAG at offset +1
+	ld h, CMP_INFO_H
+	ld l, e
+	inc l
+	ld a, [hl]
+	cp TAG_BALL
+	jr nz, .cb_next
+	inc c
+.cb_next:
+	ld a, e
+	add SIZEOF_CMP
+	ld e, a
+	cp SIZEOF_ARRAY_CMP
+	jr nz, .cb_loop
+	ld a, c
 	ret

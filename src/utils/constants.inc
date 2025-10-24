@@ -3,6 +3,7 @@ DEF rBGP				equ $FF47
 DEF rOBP1				equ $FF48
 DEF rOBP2				equ $FF49
 DEF rLCDC				equ $FF40
+DEF rDIV                equ $FF04
 
 
 DEF OAM_START	equ $FE00
@@ -36,8 +37,31 @@ DEF P1_BTN_START      equ %00001000
 
 DEF VRAM_TILE_BALL    equ VRAM_TILE_START + ($22 * VRAM_TILE_SIZE)
 
+; Sprite tile IDs
+DEF TID_BALL          equ $22
+
 ; --- Spawn/burst config ---
 DEF SPAWN_FPS_FRAMES      equ $3C    ; 60 frames per second
-DEF SPAWN_BURST_SECONDS   equ 1      ; burst period in seconds
+DEF SPAWN_BURST_SECONDS   equ 5      ; burst period in seconds
 DEF SPAWN_BURST_COUNT     equ 3      ; balls per burst
+
+; Limits
+DEF MAX_BALLS             equ 12     ; maximum balls active at once
+
+; Spawn position config
+DEF SPAWN_X_MIN           equ 8      ; keep fully on-screen (OAM X has +8 offset)
+DEF SPAWN_X_MAX           equ 168    ; inclusive max to keep fully visible: OAM X in [8..168]
+DEF SPAWN_Y_START         equ 32     ; start a bit lower to ensure full 8x16 visibility
+
+; Off-screen/despawn thresholds (OAM coordinates)
+DEF OAM_Y_INVISIBLE       equ 160    ; Y >= 160 is not drawn
+DEF OFFSCREEN_Y_THRESHOLD equ 168    ; despawn when falling below this
+
+; GA-style falling behavior
+DEF GRAVITY_BALL          equ 1      ; vy += 1 per frame
+DEF VY_MAX_BALL           equ 4      ; clamp vertical speed
+DEF MIN_SPAWN_SEPARATION  equ 16     ; enforce min distance between consecutive spawns
+
+; Preset spawn positions table size (X positions)
+DEF BALL_SPAWN_POS_COUNT  equ 10
 
