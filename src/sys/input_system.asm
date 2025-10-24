@@ -39,14 +39,8 @@ process_spawns::
 
 ;; spawn_ball_random: create a ball entity at a random X (0..152)
 spawn_ball_random::
-	;; simple LCG RNG stored in ball_rand
-	ld hl, ball_rand
-	ld a, [hl]
-	rlca
-	add a, [hl]
-	add a, [hl]
-	inc a
-	ld [hl], a
+	;; use GA-style rand8 (LFSR) to get random byte
+	call rand8
 
 	;; derive X from lower 7 bits and clamp to 0..152
 	and %01111111            ; 0..127

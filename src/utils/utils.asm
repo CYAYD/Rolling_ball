@@ -44,3 +44,19 @@ memset_256::
 
 simulated_call_hl::
 	jp hl
+
+; -------------------------------------------------------
+; rand8: 8-bit Galois LFSR RNG (inspired by GA-style utils)
+; Uses ball_rand (WRAM) as seed/state
+; Returns: A = next pseudo-random byte
+; Clobbers: A, HL, B
+rand8::
+	ld hl, ball_rand
+	ld a, [hl]
+	ld b, a
+	srl a                ; shift right, old bit0 in carry
+	jr nc, .no_xor
+	xor $B8              ; taps polynomial when LSB was 1
+.no_xor:
+	ld [hl], a
+	ret
