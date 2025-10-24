@@ -35,3 +35,9 @@ DEF P1_BTN_SELECT     equ %00000100
 DEF P1_BTN_START      equ %00001000
 
 DEF VRAM_TILE_BALL    equ VRAM_TILE_START + ($22 * VRAM_TILE_SIZE)
+
+; --- Spawn/burst config ---
+DEF SPAWN_FPS_FRAMES      equ $3C    ; 60 frames per second
+DEF SPAWN_BURST_SECONDS   equ 5      ; burst period in seconds
+DEF SPAWN_BURST_COUNT     equ 3      ; balls per burst
+

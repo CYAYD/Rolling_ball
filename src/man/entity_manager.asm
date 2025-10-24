@@ -18,14 +18,16 @@ DS ALIGN[8]
 
 alive_entities: DS 1
 
-ball_a_last: DS 1
-
 ; temporary buffer to build an entity in WRAM before allocating
 last_temp_entity: DS 1
 temp_entity: DS 12
 
-ball_want_buttons: DS 1
-prev_buttons: DS 1
+; RNG seed for spawn_ball_random
+ball_rand: DS 1
+
+; Periodic burst spawner counters
+ball_burst_frame_count: DS 1   ; 0..59 frames
+ball_burst_seconds: DS 1 
 
 SECTION "Entity Manager Code", ROM0
 
@@ -35,12 +37,10 @@ man_entity_init::
 	xor a
 	ld [alive_entities], a
 
-	;; clear spawn debounce and request flags
-	ld hl, ball_a_last
-	ld [hl], a
-	ld hl, ball_want_buttons
-	ld [hl], a
-	ld hl, prev_buttons
+	;; no spawn-related flags to clear
+		;; initialize RNG seed for ball spawn
+	ld hl, ball_rand
+	ld a, $55
 	ld [hl], a
   
   .zero_cmps_info

@@ -38,6 +38,8 @@ create_one_entity:
    	pop hl
    	ld d, CMP_PHYSICS_H
 	ld bc, SIZEOF_CMP
+
+	
 	add hl, bc
 	ld b, c
 	call memcpy_256
@@ -61,6 +63,7 @@ sc_game_init::
 	SET_BGP DEFAULT_PAL
    	SET_OBP1 DEFAULT_PAL
    	MEMCPY_256 sc_game_fence_tiles, VRAM_TILE_20, 2*VRAM_TILE_SIZE
+   	MEMCPY_256 ball_sprite, VRAM_TILE_BALL, VRAM_TILE_SIZE
    	 
    .enable_objects
    	ld hl, rLCDC
@@ -73,8 +76,6 @@ sc_game_init::
 
 	ld hl, sc_game_entity_2
 	call create_one_entity
-   
-
 
    	call lcd_on
 	
