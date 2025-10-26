@@ -43,7 +43,7 @@ DEF TID_BALL          equ $22
 ; --- Spawn/burst config ---
 DEF SPAWN_FPS_FRAMES      equ $3C    ; 60 frames per second
 DEF SPAWN_BURST_SECONDS   equ 5      ; burst period in seconds
-DEF SPAWN_BURST_COUNT     equ 3      ; balls per burst
+DEF SPAWN_BURST_COUNT     equ 5      ; balls per burst (spread coverage)
 
 ; Limits
 DEF MAX_BALLS             equ 12     ; maximum balls active at once
@@ -51,7 +51,7 @@ DEF MAX_BALLS             equ 12     ; maximum balls active at once
 ; Spawn position config
 DEF SPAWN_X_MIN           equ 8      ; keep fully on-screen (OAM X has +8 offset)
 DEF SPAWN_X_MAX           equ 168    ; inclusive max to keep fully visible: OAM X in [8..168]
-DEF SPAWN_Y_START         equ 32     ; start a bit lower to ensure full 8x16 visibility
+DEF SPAWN_Y_START         equ 0      ; spawn off-screen above (OAM Y < 16 is not visible)
 
 ; Off-screen/despawn thresholds (OAM coordinates)
 DEF OAM_Y_INVISIBLE       equ 160    ; Y >= 160 is not drawn
@@ -59,9 +59,23 @@ DEF OFFSCREEN_Y_THRESHOLD equ 168    ; despawn when falling below this
 
 ; GA-style falling behavior
 DEF GRAVITY_BALL          equ 1      ; vy += 1 per frame
-DEF VY_MAX_BALL           equ 4      ; clamp vertical speed
+DEF VY_MAX_BALL           equ 1      ; clamp vertical speed (slow fall)
+DEF BALL_FALL_DIV         equ 2      ; apply fall (gravity+move) every 2 frames
 DEF MIN_SPAWN_SEPARATION  equ 16     ; enforce min distance between consecutive spawns
+
+; --- Collision box sizes (in pixels) ---
+; Using OBJ in 8x16 mode for both player and ball
+DEF PLAYER_WIDTH          equ 8
+DEF PLAYER_HEIGHT         equ 16
+DEF BALL_WIDTH            equ 8
+DEF BALL_HEIGHT           equ 16
 
 ; Preset spawn positions table size (X positions)
 DEF BALL_SPAWN_POS_COUNT  equ 10
+DEF BALL_SPAWN_STRIDE     equ 3      ; coprime with 10 to ensure unique sequence
+
+; Staggered start configuration (frames)
+DEF STAGGER_BASE_FRAMES   equ 60     ; base delay before the first ball starts (~1.0s)
+DEF STAGGER_STEP_FRAMES   equ 48     ; delay increment between balls (~0.8s)
+DEF STAGGER_MAX_FRAMES    equ 252    ; cap fits 5-ball burst: 60,108,156,204,252
 

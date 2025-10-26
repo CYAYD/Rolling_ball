@@ -32,6 +32,19 @@ process_spawns::
 	;; time to spawn a burst, but cap by MAX_BALLS
 	xor a
 	ld [hl], a        ; reset seconds to 0
+	; reset per-burst stagger accumulator (start with a base delay so the first ball also waits)
+	ld hl, ball_burst_stagger
+	ld a, STAGGER_BASE_FRAMES
+	ld [hl], a
+	; reset per-burst spawn index
+	ld hl, ball_burst_spawn_idx
+	ld [hl], a
+	; choose a random base index for this burst
+	ld d, 0
+	ld e, BALL_SPAWN_POS_COUNT-1
+	call rand_range              ; A = base index
+	ld hl, ball_burst_base_idx
+	ld [hl], a
 	; compute capacity = MAX_BALLS - current_ball_count
 	call count_balls
 	ld c, a                 ; c = current balls
@@ -48,6 +61,18 @@ process_spawns::
 .burst_loop:
 	push bc
 	call spawn_ball_random
+	; increment stagger for next spawn in this burst
+	ld hl, ball_burst_stagger
+	ld a, [hl]
+	add STAGGER_STEP_FRAMES
+	cp STAGGER_MAX_FRAMES
+	jr c, .st_no_cap
+	ld a, STAGGER_MAX_FRAMES
+.st_no_cap:
+	ld [hl], a
+	; increment per-burst spawn index
+	ld hl, ball_burst_spawn_idx
+	inc [hl]
 	pop bc
 	dec b
 	jr nz, .burst_loop
@@ -70,36 +95,25 @@ spawn_ball_random::
 	add hl, bc
 	ld [hl], SPAWN_Y_START    ;; visible near top of screen
 	inc hl
-	; Preserve pointer to X on the stack while we compute the random index
+	; Preserve pointer to X on the stack while we compute the index
 	push hl
-	;; Stir RNG seed with rDIV for better variation, then advance LFSR
-	ld hl, ball_rand
-	ld a, [hl]
-	ld b, a
-	ld a, [rDIV]
-	xor b
-	ld [hl], a
-	call rand8                   ; advance LFSR state
-	ld d, 0
-	ld e, BALL_SPAWN_POS_COUNT-1
-	call rand_range              ; A = index
-	; Avoid repeating same slot consecutively
-	push af
-	ld hl, ball_last_spawn_index
-	ld c, [hl]
-	pop af
-	cp c
-	jr nz, .idx_ok
-	inc a                        ; pick next slot
+	; idx = (base_idx + spawn_idx * STRIDE) % COUNT
+	ld hl, ball_burst_spawn_idx
+	ld c, [hl]                   ; c = spawn_idx
+	ld b, BALL_SPAWN_STRIDE
+	xor a                        ; a = 0
+.mul_loop:
+	add c                        ; a += spawn_idx
+	dec b
+	jr nz, .mul_loop             ; a = spawn_idx * STRIDE
+	ld hl, ball_burst_base_idx
+	add [hl]                     ; a += base_idx
+.mod_loop:
 	cp BALL_SPAWN_POS_COUNT
-	jr c, .idx_ok
-	xor a                        ; wrap to 0
-.idx_ok:
-	; Store last index
-	push af
-	ld hl, ball_last_spawn_index
-	pop af
-	ld [hl], a
+	jr c, .have_idx
+	sub BALL_SPAWN_POS_COUNT
+	jr .mod_loop
+.have_idx:
 	; Load X from table and write it
 	ld hl, ball_spawn_positions_x
 	ld c, a
@@ -117,6 +131,10 @@ spawn_ball_random::
 	ld [hl], a
 	inc hl
 	xor a
+	ld [hl], a
+	; write per-entity start delay into next byte (physics + CMP_PHYSICS_DELAY)
+	inc hl
+	ld a, [ball_burst_stagger]
 	ld [hl], a
 
 	;; create entity

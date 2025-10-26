@@ -6,13 +6,41 @@ SECTION "Physics System Code", ROM0
 
 
 sys_physics_update_one_entity::
-	; GA-like gravity for balls (tag-based)
+	; If this is a ball, handle delay and gravity
 	ld h, CMP_INFO_H
 	ld l, e
 	inc l
 	ld a, [hl]
 	cp TAG_BALL
 	jr nz, .no_gravity
+	; check per-entity delay (physics byte +2)
+	ld h, CMP_PHYSICS_H
+	ld l, e
+	inc hl
+	inc hl
+	ld a, [hl]
+	cp 0
+	jr z, .no_delay
+	dec [hl]
+	ret                    ; skip movement this frame while delaying
+.no_delay:
+	; rate divider for balls: only update every BALL_FALL_DIV frames
+	ld h, CMP_PHYSICS_H
+	ld l, e
+	inc hl
+	inc hl
+	inc hl
+	ld a, [hl]
+	inc a
+	cp BALL_FALL_DIV
+	jr c, .store_tick_and_ret_b
+	xor a
+	ld [hl], a
+	jr .after_tick_b
+.store_tick_and_ret_b:
+	ld [hl], a
+	ret
+.after_tick_b:
 	; increment vy and clamp
 	ld h, CMP_PHYSICS_H
 	ld l, e

@@ -30,6 +30,11 @@ RSRESET
 DEF CMP_SPRITE_Y	RB 1
 DEF CMP_SPRITE_X	RB 1
 DEF CMP_SPRITE_TID	RB 1
+
+; Alias for the third byte of the physics component to use as a per-entity delay
+DEF CMP_PHYSICS_DELAY	equ 2
+; Alias for the fourth byte as a per-entity fall tick (rate divider)
+DEF CMP_PHYSICS_TICK	equ 3
 DEF CMP_SPRITE_ATTR	RB 1
 
 RSRESET

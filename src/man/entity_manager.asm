@@ -35,6 +35,11 @@ ball_last_spawn_x: DS 1
 ball_last_spawn_index: DS 1
 ; rng tick mixes into RNG each frame to avoid periodic repeats
 rng_tick: DS 1
+; per-burst stagger delay accumulator (frames)
+ball_burst_stagger: DS 1
+; per-burst base index and spawn counter for preset positions
+ball_burst_base_idx: DS 1
+ball_burst_spawn_idx: DS 1
 
 SECTION "Entity Manager Code", ROM0
 
@@ -71,6 +76,14 @@ man_entity_init::
 	; init rng tick to 0
 	ld hl, rng_tick
 	xor a
+	ld [hl], a
+    ; init stagger accumulator to 0
+    ld hl, ball_burst_stagger
+    ld [hl], a
+	; init base idx and spawn idx to 0
+	ld hl, ball_burst_base_idx
+	ld [hl], a
+	ld hl, ball_burst_spawn_idx
 	ld [hl], a
   
   .zero_cmps_info

@@ -1,100 +1,106 @@
 SUMMARY:
-	ROM0: 841 bytes used / 15543 free
-	WRAM0: 788 bytes used / 3308 free
+	ROM0: 908 bytes used / 15476 free
+	WRAM0: 791 bytes used / 3305 free
 
 ROM0 bank #0:
-	SECTION: $0000-$00ee ($00ef bytes) ["Input System"]
-	         $0000 = process_spawns
-	         $0031 = process_spawns.have_quota
-	         $0031 = process_spawns.burst_loop
-	         $0039 = process_spawns.no_burst
-	         $003a = spawn_ball_random
-	         $0073 = spawn_ball_random.idx_ok
-	         $0097 = read_input_and_apply
-	         $00b1 = read_input_and_apply.move_no_up
-	         $00b8 = read_input_and_apply.move_no_down
-	         $00c4 = read_input_and_apply.move_no_right
-	         $00cb = read_input_and_apply.move_no_left
-	         $00cd = count_balls
-	         $00d1 = count_balls.cb_loop
-	         $00e5 = count_balls.cb_next
-	EMPTY: $00ef-$00ff ($0011 bytes)
+	SECTION: $0000-$0081 ($0082 bytes) ["Entity Manager Code"]
+	         $0000 = man_entity_init
+	         $0000 = man_entity_init.zero_alive_entities
+	         $0011 = man_entity_init.seed_ok
+	         $0036 = man_entity_init.zero_cmps_info
+	         $003f = man_entity_init.zero_cmps_sprite
+	         $0048 = man_entity_alloc
+	         $0048 = man_entity_alloc.one_more_alice_entity
+	         $004c = man_entity_alloc.find_first_free_slot
+	         $0052 = man_entity_alloc.loop
+	         $0057 = man_entity_alloc.found_free_slot
+	         $005a = man_entity_get_components
+	         $0060 = man_entity_for_each
+	         $0063 = man_entity_for_each.check_if_zero_entities
+	         $0066 = man_entity_for_each.process_alive_entities
+	         $006a = man_entity_for_each.check_if_valid
+	         $006a = man_entity_for_each.loop
+	         $0071 = man_entity_for_each.process
+	         $007a = man_entity_for_each.check_end
+	         $007c = man_entity_for_each.next
+	SECTION: $0082-$00f3 ($0072 bytes) ["Scene Game"]
+	         $0082 = create_one_entity
+	         $0083 = create_one_entity.reserve_space_for_entity
+	         $0086 = create_one_entity.copy_info_cmp
+	         $0090 = create_one_entity.copy_sprite_cmp
+	         $009e = create_one_entity.copy_physics_cmp
+	         $00ab = sc_game_init
+	         $00ae = sc_game_init.init_managers_and_systems
+	         $00b4 = sc_game_init.init_palettes_and_tiles
+	         $00d4 = sc_game_init.enable_objects
+	         $00db = sc_game_init.creat_entities
+	         $00e5 = sc_game_run.loop
+	         $00e5 = sc_game_run
+	EMPTY: $00f4-$00ff ($000c bytes)
 	SECTION: $0100-$014f ($0050 bytes) ["Header"]
 	SECTION: $0150-$0157 ($0008 bytes) ["Entry point"]
 	         $0150 = main
-	SECTION: $0158-$01cd ($0076 bytes) ["Entity Manager Code"]
-	         $0158 = man_entity_init.zero_alive_entities
-	         $0158 = man_entity_init
-	         $0169 = man_entity_init.seed_ok
-	         $0182 = man_entity_init.zero_cmps_info
-	         $018b = man_entity_init.zero_cmps_sprite
-	         $0194 = man_entity_alloc.one_more_alice_entity
-	         $0194 = man_entity_alloc
-	         $0198 = man_entity_alloc.find_first_free_slot
-	         $019e = man_entity_alloc.loop
-	         $01a3 = man_entity_alloc.found_free_slot
-	         $01a6 = man_entity_get_components
-	         $01ac = man_entity_for_each
-	         $01af = man_entity_for_each.check_if_zero_entities
-	         $01b2 = man_entity_for_each.process_alive_entities
-	         $01b6 = man_entity_for_each.check_if_valid
-	         $01b6 = man_entity_for_each.loop
-	         $01bd = man_entity_for_each.process
-	         $01c6 = man_entity_for_each.check_end
-	         $01c8 = man_entity_for_each.next
-	SECTION: $01ce-$023f ($0072 bytes) ["Scene Game"]
-	         $01ce = create_one_entity
-	         $01cf = create_one_entity.reserve_space_for_entity
-	         $01d2 = create_one_entity.copy_info_cmp
-	         $01dc = create_one_entity.copy_sprite_cmp
-	         $01ea = create_one_entity.copy_physics_cmp
-	         $01f7 = sc_game_init
-	         $01fa = sc_game_init.init_managers_and_systems
-	         $0200 = sc_game_init.init_palettes_and_tiles
-	         $0220 = sc_game_init.enable_objects
-	         $0227 = sc_game_init.creat_entities
-	         $0231 = sc_game_run.loop
-	         $0231 = sc_game_run
-	SECTION: $0240-$029d ($005e bytes) ["Scene Game Data"]
-	         $0240 = ball_sprite
-	         $0250 = sc_game_fence_tiles
-	         $0270 = sc_game_entity_1
-	         $027c = sc_game_entity_2
-	         $0288 = sc_ball_entity
-	         $0294 = ball_spawn_positions_x
-	SECTION: $029e-$02fb ($005e bytes) ["Utils"]
-	         $029e = lcd_off
-	         $02a9 = lcd_on
-	         $02af = wait_vblank_start
-	         $02b4 = wait_vblank_start.loop
-	         $02b8 = memcpy_256
-	         $02bf = memset_256
-	         $02c4 = simulated_call_hl
-	         $02c5 = rand8
-	         $02d0 = rand8.no_xor
-	         $02d2 = mul8_high
-	         $02d8 = mul8_high.mul_loop
-	         $02e5 = mul8_high.no_add
-	         $02ee = rand_range
-	SECTION: $02fc-$0342 ($0047 bytes) ["Physics System Code"]
-	         $02fc = sys_physics_update_one_entity
-	         $0312 = sys_physics_update_one_entity.grav_store
-	         $0314 = sys_physics_update_one_entity.no_gravity
-	         $0314 = sys_physics_update_one_entity.hl_phy_de_spr
-	         $0319 = sys_physics_update_one_entity.y_plus_vy
-	         $031e = sys_physics_update_one_entity.x_plus_vx
-	         $033b = sys_physics_update_one_entity.no_despawn
-	         $033c = sys_physics_update
-	SECTION: $0343-$0359 ($0017 bytes) ["Render System Code"]
-	         $0343 = sys_render_init
-	         $034d = sys_render_update
-	EMPTY: $035a-$3fff ($3ca6 bytes)
-	TOTAL EMPTY: $3cb7 bytes
+	SECTION: $0158-$025f ($0108 bytes) ["Input System"]
+	         $0158 = process_spawns
+	         $019e = process_spawns.have_quota
+	         $019e = process_spawns.burst_loop
+	         $01ae = process_spawns.st_no_cap
+	         $01b7 = process_spawns.no_burst
+	         $01b8 = spawn_ball_random
+	         $01d5 = spawn_ball_random.mul_loop
+	         $01dd = spawn_ball_random.mod_loop
+	         $01e5 = spawn_ball_random.have_idx
+	         $0208 = read_input_and_apply
+	         $0222 = read_input_and_apply.move_no_up
+	         $0229 = read_input_and_apply.move_no_down
+	         $0235 = read_input_and_apply.move_no_right
+	         $023c = read_input_and_apply.move_no_left
+	         $023e = count_balls
+	         $0242 = count_balls.cb_loop
+	         $0256 = count_balls.cb_next
+	SECTION: $0260-$02c4 ($0065 bytes) ["Physics System Code"]
+	         $0260 = sys_physics_update_one_entity
+	         $0275 = sys_physics_update_one_entity.no_delay
+	         $0285 = sys_physics_update_one_entity.store_tick_and_ret_b
+	         $0287 = sys_physics_update_one_entity.after_tick_b
+	         $0294 = sys_physics_update_one_entity.grav_store
+	         $0296 = sys_physics_update_one_entity.no_gravity
+	         $0296 = sys_physics_update_one_entity.hl_phy_de_spr
+	         $029b = sys_physics_update_one_entity.y_plus_vy
+	         $02a0 = sys_physics_update_one_entity.x_plus_vx
+	         $02bd = sys_physics_update_one_entity.no_despawn
+	         $02be = sys_physics_update
+	SECTION: $02c5-$0322 ($005e bytes) ["Scene Game Data"]
+	         $02c5 = ball_sprite
+	         $02d5 = sc_game_fence_tiles
+	         $02f5 = sc_game_entity_1
+	         $0301 = sc_game_entity_2
+	         $030d = sc_ball_entity
+	         $0319 = ball_spawn_positions_x
+	SECTION: $0323-$0380 ($005e bytes) ["Utils"]
+	         $0323 = lcd_off
+	         $032e = lcd_on
+	         $0334 = wait_vblank_start
+	         $0339 = wait_vblank_start.loop
+	         $033d = memcpy_256
+	         $0344 = memset_256
+	         $0349 = simulated_call_hl
+	         $034a = rand8
+	         $0355 = rand8.no_xor
+	         $0357 = mul8_high
+	         $035d = mul8_high.mul_loop
+	         $036a = mul8_high.no_add
+	         $0373 = rand_range
+	SECTION: $0381-$0397 ($0017 bytes) ["Render System Code"]
+	         $0381 = sys_render_init
+	         $038b = sys_render_update
+	EMPTY: $0398-$3fff ($3c68 bytes)
+	TOTAL EMPTY: $3c74 bytes
 
 WRAM0 bank #0:
-	SECTION: $c000-$c313 ($0314 bytes) ["Entity Manager Data"]
-	         $c000 = components_info
+	SECTION: $c000-$c316 ($0317 bytes) ["Entity Manager Data"]
 	         $c000 = components
+	         $c000 = components_info
 	         $c100 = components_sprite
 	         $c200 = components_physics
 	         $c300 = alive_entities
@@ -106,5 +112,8 @@ WRAM0 bank #0:
 	         $c311 = ball_last_spawn_x
 	         $c312 = ball_last_spawn_index
 	         $c313 = rng_tick
-	EMPTY: $c314-$cfff ($0cec bytes)
-	TOTAL EMPTY: $0cec bytes
+	         $c314 = ball_burst_stagger
+	         $c315 = ball_burst_base_idx
+	         $c316 = ball_burst_spawn_idx
+	EMPTY: $c317-$cfff ($0ce9 bytes)
+	TOTAL EMPTY: $0ce9 bytes

@@ -25,8 +25,9 @@ sc_game_entity_2::
    sc_ball_entity::
    DB ENTITY_WITH_ALL, TAG_BALL, 0, 0               ;; CMP_INFO (tag as BALL)
    DB 32, 16, $22, %00000000                         ;; CMP_SPRITE (TID $22 - after copying)
-   DB 1, 0, 0, 0                                     ;; CMP_PHYSICS (vy=+1 initial, vx=0)
+   DB 0, 0, 0, 0                                     ;; CMP_PHYSICS (vy=0 initial, vx=0)
 
 ; Preset X positions for ball spawns (OAM X coordinates)
 ball_spawn_positions_x::
-   DB 16, 32, 48, 64, 80, 96, 112, 128, 144, 160
+   ; Interleaved across left/center/right to ensure early indices already cover the screen
+   DB 16, 144, 80, 112, 48, 160, 96, 128, 64, 32
