@@ -36,9 +36,11 @@ DEF P1_BTN_SELECT     equ %00000100
 DEF P1_BTN_START      equ %00001000
 
 DEF VRAM_TILE_BALL    equ VRAM_TILE_START + ($22 * VRAM_TILE_SIZE)
+DEF VRAM_TILE_BALL_BLACK equ VRAM_TILE_START + ($24 * VRAM_TILE_SIZE)
 
 ; Sprite tile IDs
 DEF TID_BALL          equ $22
+DEF TID_BALL_BLACK    equ $24
 
 ; --- Spawn/burst config ---
 DEF SPAWN_FPS_FRAMES      equ $3C    ; 60 frames per second
