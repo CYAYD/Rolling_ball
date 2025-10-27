@@ -56,9 +56,9 @@ sc_game_init::
    SET_BGP DEFAULT_PAL
       SET_OBP1 DEFAULT_PAL
    MEMCPY_256 sc_game_fence_tiles, VRAM_TILE_20, 2*VRAM_TILE_SIZE
-   ; Load 8x16 sprite: copy ball tile into two consecutive tiles
+   ; Load 8x16 sprite: top = ball sprite, bottom = blank to avoid double-ball look
    MEMCPY_256 ball_sprite, VRAM_TILE_BALL, VRAM_TILE_SIZE
-   MEMCPY_256 ball_sprite, VRAM_TILE_BALL + VRAM_TILE_SIZE, VRAM_TILE_SIZE
+   MEMCPY_256 blank_tile, VRAM_TILE_BALL + VRAM_TILE_SIZE, VRAM_TILE_SIZE
        
    .enable_objects
       ld hl, rLCDC
