@@ -54,10 +54,11 @@ sc_game_init::
 
    .init_palettes_and_tiles
    SET_BGP DEFAULT_PAL
-   SET_OBP1 DEFAULT_PAL
+      SET_OBP1 DEFAULT_PAL
    MEMCPY_256 sc_game_fence_tiles, VRAM_TILE_20, 2*VRAM_TILE_SIZE
    ; Load 8x16 sprite: copy ball tile into two consecutive tiles
    MEMCPY_256 ball_sprite, VRAM_TILE_BALL, VRAM_TILE_SIZE
+   MEMCPY_256 ball_sprite, VRAM_TILE_BALL + VRAM_TILE_SIZE, VRAM_TILE_SIZE
        
    .enable_objects
       ld hl, rLCDC
@@ -78,6 +79,7 @@ sc_game_run::
       call sys_physics_update
       call read_input_and_apply
       call process_spawns
+      call sys_collision_update
       call sys_render_update
    jr .loop
 
