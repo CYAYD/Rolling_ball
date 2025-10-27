@@ -1,5 +1,6 @@
 INCLUDE "man/entity_manager.inc"
 
+
 SECTION "Scene Game Data", ROM0
 
 ball_sprite::

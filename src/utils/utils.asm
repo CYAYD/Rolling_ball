@@ -42,6 +42,17 @@ memset_256::
    jr nz, memset_256
    ret
 
+; Copia BC bytes desde HL → DE
+memcpy_bc::
+    ld a, [hl+]
+    ld [de], a
+    inc de
+    dec bc
+    ld a, b
+    or c
+    jr nz, memcpy_bc
+    ret
+
 simulated_call_hl::
 	jp hl
 

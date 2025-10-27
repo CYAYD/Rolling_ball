@@ -1,6 +1,8 @@
 INCLUDE "man/entity_manager.inc"
 INCLUDE "utils/constants.inc"
 INCLUDE "utils/macros.inc"
+INCLUDE "src/assets/tiles.z80"
+INCLUDE "src/assets/tilemap.z80"
 
 DEF VRAM_TILE_20 equ VRAM_TILE_START + ($20 * VRAM_TILE_SIZE)
 
@@ -59,7 +61,30 @@ sc_game_init::
    ; Load 8x16 sprite: top = ball sprite, bottom = blank to avoid double-ball look
    MEMCPY_256 ball_sprite, VRAM_TILE_BALL, VRAM_TILE_SIZE
    MEMCPY_256 blank_tile, VRAM_TILE_BALL + VRAM_TILE_SIZE, VRAM_TILE_SIZE
-       
+
+
+; ----- Carga tiles del mapa en VRAM -----
+	ld hl, TileLabel
+	ld de, $8000
+	ld bc, (TileLabelEnd - TileLabel) / 16
+
+	.copy_loop:
+		ld b, 16
+		call memcpy_256
+		dec bc
+		ld a, b
+		or c
+		jr nz, .copy_loop
+
+
+
+	; --- Cargar el tilemap en VRAM --------------------------
+	ld hl, tilemap       ; Dirección del tilemap ROM
+	ld de, $9800         ; VRAM background map
+	ld bc, 32*32         ; 360 bytes
+	call memcpy_bc       ; OJO, NO memcpy_256
+
+   
    .enable_objects
       ld hl, rLCDC
       set rLCDC_OBJ_ENABLE, [hl]
@@ -67,6 +92,13 @@ sc_game_init::
 
     .creat_entities
       ld hl, sc_game_entity_1
+
+	; Activar fondo (bit 0 = 1)
+	set 0, [hl]
+	; Usar BG Map en $9800 (bit 3 = 0)
+	res 3, [hl]
+
+   
    call create_one_entity
 
    call lcd_on
