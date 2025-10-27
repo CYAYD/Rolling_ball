@@ -8,15 +8,19 @@ uno_numero::
    DB $00,$00,$00,$00,$18,$18,$38,$38
    DB $18,$18,$18,$18,$18,$18,$3C,$3C
 
-
+corazon::
+   DB $00,$00,$00,$00,$00,$00,$00,$00
+   DB $3C,$3C,$7E,$42,$CF,$81,$DF,$80
+   DB $FF,$80,$7F,$40,$3F,$20,$1F,$10
+   DB $0F,$08,$07,$04,$03,$02,$01,$01
+   DB $00,$00,$00,$00,$00,$00,$00,$00
+   DB $78,$78,$FC,$84,$FE,$02,$FE,$02
+   DB $FE,$02,$FC,$04,$F8,$08,$F0,$10
+   DB $E0,$20,$C0,$40,$80,$80,$00,$00
 
 ball_sprite::
    DB $3C,$3C,$42,$42,$F9,$81,$BD,$C1
    DB $BD,$C1,$9F,$E1,$42,$7E,$3C,$3C
-
-Black_ball::
-   DB $3C,$3C,$7E,$7E,$FF,$FF,$FF,$FF
-   DB $FF,$FF,$FF,$FF,$7E,$7E,$3C,$3C
 
 ; A blank 8x8 tile (all zeros) to use as the lower half in 8x16 mode
 blank_tile::
