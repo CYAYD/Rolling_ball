@@ -1,5 +1,5 @@
 SUMMARY:
-	ROM0: 2867 bytes used / 13517 free
+	ROM0: 2883 bytes used / 13501 free
 	WRAM0: 793 bytes used / 3303 free
 
 ROM0 bank #0:
@@ -74,43 +74,44 @@ ROM0 bank #0:
 	         $0a24 = man_entity_for_each.process
 	         $0a2d = man_entity_for_each.check_end
 	         $0a2f = man_entity_for_each.next
-	SECTION: $0a35-$0aa2 ($006e bytes) ["Scene Game Data"]
-	         $0a35 = ball_sprite
-	         $0a45 = blank_tile
-	         $0a55 = sc_game_fence_tiles
-	         $0a75 = sc_game_entity_1
-	         $0a81 = sc_game_entity_2
-	         $0a8d = sc_ball_entity
-	         $0a99 = ball_spawn_positions_x
-	SECTION: $0aa3-$0b09 ($0067 bytes) ["Utils"]
-	         $0aa3 = lcd_off
-	         $0aae = lcd_on
-	         $0ab4 = wait_vblank_start
-	         $0ab9 = wait_vblank_start.loop
-	         $0abd = memcpy_256
-	         $0ac4 = memset_256
-	         $0ac9 = memcpy_bc
-	         $0ad2 = simulated_call_hl
-	         $0ad3 = rand8
-	         $0ade = rand8.no_xor
-	         $0ae0 = mul8_high
-	         $0ae6 = mul8_high.mul_loop
-	         $0af3 = mul8_high.no_add
-	         $0afc = rand_range
-	SECTION: $0b0a-$0b6e ($0065 bytes) ["Physics System Code"]
-	         $0b0a = sys_physics_update_one_entity
-	         $0b1f = sys_physics_update_one_entity.no_delay
-	         $0b2f = sys_physics_update_one_entity.store_tick_and_ret_b
-	         $0b31 = sys_physics_update_one_entity.after_tick_b
-	         $0b3e = sys_physics_update_one_entity.grav_store
-	         $0b40 = sys_physics_update_one_entity.no_gravity
-	         $0b40 = sys_physics_update_one_entity.hl_phy_de_spr
-	         $0b45 = sys_physics_update_one_entity.y_plus_vy
-	         $0b4a = sys_physics_update_one_entity.x_plus_vx
-	         $0b67 = sys_physics_update_one_entity.no_despawn
-	         $0b68 = sys_physics_update
-	EMPTY: $0b6f-$3fff ($3491 bytes)
-	TOTAL EMPTY: $34cd bytes
+	SECTION: $0a35-$0ab2 ($007e bytes) ["Scene Game Data"]
+	         $0a35 = uno_numero
+	         $0a45 = ball_sprite
+	         $0a55 = blank_tile
+	         $0a65 = sc_game_fence_tiles
+	         $0a85 = sc_game_entity_1
+	         $0a91 = sc_game_entity_2
+	         $0a9d = sc_ball_entity
+	         $0aa9 = ball_spawn_positions_x
+	SECTION: $0ab3-$0b19 ($0067 bytes) ["Utils"]
+	         $0ab3 = lcd_off
+	         $0abe = lcd_on
+	         $0ac4 = wait_vblank_start
+	         $0ac9 = wait_vblank_start.loop
+	         $0acd = memcpy_256
+	         $0ad4 = memset_256
+	         $0ad9 = memcpy_bc
+	         $0ae2 = simulated_call_hl
+	         $0ae3 = rand8
+	         $0aee = rand8.no_xor
+	         $0af0 = mul8_high
+	         $0af6 = mul8_high.mul_loop
+	         $0b03 = mul8_high.no_add
+	         $0b0c = rand_range
+	SECTION: $0b1a-$0b7e ($0065 bytes) ["Physics System Code"]
+	         $0b1a = sys_physics_update_one_entity
+	         $0b2f = sys_physics_update_one_entity.no_delay
+	         $0b3f = sys_physics_update_one_entity.store_tick_and_ret_b
+	         $0b41 = sys_physics_update_one_entity.after_tick_b
+	         $0b4e = sys_physics_update_one_entity.grav_store
+	         $0b50 = sys_physics_update_one_entity.no_gravity
+	         $0b50 = sys_physics_update_one_entity.hl_phy_de_spr
+	         $0b55 = sys_physics_update_one_entity.y_plus_vy
+	         $0b5a = sys_physics_update_one_entity.x_plus_vx
+	         $0b77 = sys_physics_update_one_entity.no_despawn
+	         $0b78 = sys_physics_update
+	EMPTY: $0b7f-$3fff ($3481 bytes)
+	TOTAL EMPTY: $34bd bytes
 
 WRAM0 bank #0:
 	SECTION: $c000-$c316 ($0317 bytes) ["Entity Manager Data"]

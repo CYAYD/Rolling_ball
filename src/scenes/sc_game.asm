@@ -3,6 +3,13 @@ INCLUDE "man/entity_manager.inc"
 
 SECTION "Scene Game Data", ROM0
 
+
+uno_numero::
+   DB $00,$00,$00,$00,$18,$18,$38,$38
+   DB $18,$18,$18,$18,$18,$18,$3C,$3C
+
+
+
 ball_sprite::
    DB $3C,$3C,$42,$42,$F9,$81,$BD,$C1
    DB $BD,$C1,$9F,$E1,$42,$7E,$3C,$3C
