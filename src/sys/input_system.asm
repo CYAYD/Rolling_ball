@@ -38,6 +38,7 @@ process_spawns::
 	ld [hl], a
 	; reset per-burst spawn index
 	ld hl, ball_burst_spawn_idx
+	xor a
 	ld [hl], a
 	; choose a random base index for this burst
 	ld d, 0
@@ -58,6 +59,8 @@ process_spawns::
 	jr nc, .have_quota      ; if capacity >= SPAWN_BURST_COUNT, keep b
 	ld b, a                 ; else b = capacity
 .have_quota:
+	; choose a fair index in [0..b-1] for the black ball in this burst (no repeats until all used)
+	call black_select_begin    ; preserves B
 .burst_loop:
 	push bc
 	call spawn_ball_random
@@ -76,6 +79,7 @@ process_spawns::
 	pop bc
 	dec b
 	jr nz, .burst_loop
+	; end of burst
 
 .no_burst:
 	ret
@@ -122,6 +126,10 @@ spawn_ball_random::
 	ld a, [hl]
 	pop hl                       ; restore pointer to X
 	ld [hl], a                   ; write X
+
+	; If this spawn's index matches the chosen black index, set TID to black
+	; HL currently points to the X byte
+	call black_maybe_paint_temp_entity_black
 
 	;; patch physics at temp_entity + 8 (vy, vx)
 	ld hl, temp_entity
@@ -192,6 +200,7 @@ read_input_and_apply::
 	ret
 
 
+
 ;; count_balls: returns the number of active ball entities in A (by TAG)
 count_balls::
 	xor a
@@ -220,4 +229,36 @@ count_balls::
 	cp SIZEOF_ARRAY_CMP
 	jr nz, .cb_loop
 	ld a, c
+	ret
+
+
+;; normalize_all_balls_normal: set all balls' sprite TID to TID_BALL
+normalize_all_balls_normal::
+	ld e, 0
+.norm_loop:
+	; check VALID_ENTITY
+	ld h, CMP_INFO_H
+	ld l, e
+	ld a, [hl]
+	and VALID_ENTITY
+	cp VALID_ENTITY
+	jr nz, .norm_next
+	; check TAG == BALL
+	inc l
+	ld a, [hl]
+	cp TAG_BALL
+	jr nz, .norm_next
+	; write TID_BALL at components_sprite + 2
+	ld h, CMP_SPRITE_H
+	ld l, e
+	inc l
+	inc l
+	ld a, TID_BALL
+	ld [hl], a
+.norm_next:
+	ld a, e
+	add SIZEOF_CMP
+	ld e, a
+	cp SIZEOF_ARRAY_CMP
+	jr nz, .norm_loop
 	ret

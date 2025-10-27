@@ -23,6 +23,8 @@ alive_entities: DS 1
 last_temp_entity: DS 1
 temp_entity: DS 12
 
+; last allocated entity offset (low byte within component arrays) [unused now]
+
 ; RNG seed for spawn_ball_random
 ball_rand: DS 1
 
@@ -40,6 +42,10 @@ ball_burst_stagger: DS 1
 ; per-burst base index and spawn counter for preset positions
 ball_burst_base_idx: DS 1
 ball_burst_spawn_idx: DS 1
+; per-burst chosen index that will be black among spawned balls
+ball_burst_black_idx: DS 1
+; mask of used black indices (bits 0..SPAWN_BURST_COUNT-1), to avoid repeats until all used
+ball_black_used_mask: DS 1
 
 SECTION "Entity Manager Code", ROM0
 
@@ -85,6 +91,12 @@ man_entity_init::
 	ld [hl], a
 	ld hl, ball_burst_spawn_idx
 	ld [hl], a
+	; init black index to 0
+	ld hl, ball_burst_black_idx
+	ld [hl], a
+	; init black used mask to 0
+	ld hl, ball_black_used_mask
+	ld [hl], a
   
   .zero_cmps_info
 	ld hl, components_info
@@ -114,6 +126,8 @@ man_entity_alloc::
 		
 	.found_free_slot:
 	ld [hl], RESERVED_COMPONENT
+
+	; (no need to store last_alloc_offset)
 
 	ret
 

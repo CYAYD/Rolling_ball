@@ -36,14 +36,17 @@ DEF P1_BTN_SELECT     equ %00000100
 DEF P1_BTN_START      equ %00001000
 
 DEF VRAM_TILE_BALL    equ VRAM_TILE_START + ($22 * VRAM_TILE_SIZE)
+DEF VRAM_TILE_BALL_BLACK equ VRAM_TILE_START + ($24 * VRAM_TILE_SIZE)
 
 ; Sprite tile IDs
 DEF TID_BALL          equ $22
+DEF TID_BALL_BLACK    equ $24
 
 ; --- Spawn/burst config ---
 DEF SPAWN_FPS_FRAMES      equ $3C    ; 60 frames per second
 DEF SPAWN_BURST_SECONDS   equ 5      ; burst period in seconds
 DEF SPAWN_BURST_COUNT     equ 5      ; balls per burst (spread coverage)
+DEF SPAWN_BLACK_SECONDS   equ 6      ; every ~6 seconds spawn one black ball
 
 ; Limits
 DEF MAX_BALLS             equ 12     ; maximum balls active at once

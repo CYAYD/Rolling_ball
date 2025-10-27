@@ -22,6 +22,10 @@ ball_sprite::
    DB $3C,$3C,$42,$42,$F9,$81,$BD,$C1
    DB $BD,$C1,$9F,$E1,$42,$7E,$3C,$3C
 
+black_ball::
+   DB $3C,$3C,$7E,$7E,$FF,$FF,$FF,$FF
+   DB $FF,$FF,$FF,$FF,$7E,$7E,$3C,$3C
+
 ; A blank 8x8 tile (all zeros) to use as the lower half in 8x16 mode
 blank_tile::
    DB $00,$00,$00,$00,$00,$00,$00,$00

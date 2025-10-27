@@ -58,9 +58,6 @@ sc_game_init::
    SET_BGP DEFAULT_PAL
       SET_OBP1 DEFAULT_PAL
    MEMCPY_256 sc_game_fence_tiles, VRAM_TILE_20, 2*VRAM_TILE_SIZE
-   ; Load 8x16 sprite: top = ball sprite, bottom = blank to avoid double-ball look
-   MEMCPY_256 ball_sprite, VRAM_TILE_BALL, VRAM_TILE_SIZE
-   MEMCPY_256 blank_tile, VRAM_TILE_BALL + VRAM_TILE_SIZE, VRAM_TILE_SIZE
 
 
 ; ----- Carga tiles del mapa en VRAM -----
@@ -83,6 +80,14 @@ sc_game_init::
    ld de, $9800         ; VRAM background map
    ld bc, 32*32         ; 360 bytes
    call memcpy_bc       ; OJO, NO memcpy_256
+
+   ; Ahora cargamos los tiles de sprites OBJ (después del BG para evitar sobrescrituras)
+   ; Pelota normal (8x16): arriba = ball_sprite, abajo = blank
+   MEMCPY_256 ball_sprite, VRAM_TILE_BALL, VRAM_TILE_SIZE
+   MEMCPY_256 blank_tile, VRAM_TILE_BALL + VRAM_TILE_SIZE, VRAM_TILE_SIZE
+   ; Pelota negra (8x16): arriba = black_ball, abajo = blank
+   MEMCPY_256 black_ball, VRAM_TILE_BALL_BLACK, VRAM_TILE_SIZE
+   MEMCPY_256 blank_tile, VRAM_TILE_BALL_BLACK + VRAM_TILE_SIZE, VRAM_TILE_SIZE
 
    
    .enable_objects
