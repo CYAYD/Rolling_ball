@@ -61,9 +61,6 @@ sc_game_init::
    ; Load 8x16 sprite: top = ball sprite, bottom = blank to avoid double-ball look
    MEMCPY_256 ball_sprite, VRAM_TILE_BALL, VRAM_TILE_SIZE
    MEMCPY_256 blank_tile, VRAM_TILE_BALL + VRAM_TILE_SIZE, VRAM_TILE_SIZE
-   ; Load black ball tiles similarly: top = black ball sprite, bottom = blank
-   MEMCPY_256 Black_ball, VRAM_TILE_BALL_BLACK, VRAM_TILE_SIZE
-   MEMCPY_256 blank_tile, VRAM_TILE_BALL_BLACK + VRAM_TILE_SIZE, VRAM_TILE_SIZE
 
 
 ; ----- Carga tiles del mapa en VRAM -----
@@ -114,7 +111,6 @@ sc_game_run::
       call sys_physics_update
       call read_input_and_apply
       call process_spawns
-      call sys_black_ball_update
       call sys_collision_update
       call sys_render_update
    jr .loop
