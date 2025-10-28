@@ -35,12 +35,19 @@ DEF P1_BTN_B          equ %00000010
 DEF P1_BTN_SELECT     equ %00000100
 DEF P1_BTN_START      equ %00001000
 
-DEF VRAM_TILE_BALL    equ VRAM_TILE_START + ($22 * VRAM_TILE_SIZE)
-DEF VRAM_TILE_BALL_BLACK equ VRAM_TILE_START + ($24 * VRAM_TILE_SIZE)
+; Use high OBJ tile indices to avoid clobbering BG tiles (BG uses 0..42)
+DEF VRAM_TILE_ONE     equ VRAM_TILE_START + ($60 * VRAM_TILE_SIZE) ; $60/$61
+DEF VRAM_TILE_BALL    equ VRAM_TILE_START + ($62 * VRAM_TILE_SIZE) ; $62/$63
+DEF VRAM_TILE_BALL_BLACK equ VRAM_TILE_START + ($64 * VRAM_TILE_SIZE) ; $64/$65
+DEF VRAM_TILE_HEART   equ VRAM_TILE_START + ($66 * VRAM_TILE_SIZE) ; $66/$67
+DEF VRAM_TILE_HEART_R equ VRAM_TILE_START + ($68 * VRAM_TILE_SIZE) ; $68/$69
 
 ; Sprite tile IDs
-DEF TID_BALL          equ $22
-DEF TID_BALL_BLACK    equ $24
+DEF TID_ONE           equ $60
+DEF TID_BALL          equ $62
+DEF TID_BALL_BLACK    equ $64
+DEF TID_HEART         equ $66
+DEF TID_HEART_R       equ $68
 
 ; --- Spawn/burst config ---
 DEF SPAWN_FPS_FRAMES      equ $3C    ; 60 frames per second

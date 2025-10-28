@@ -130,3 +130,25 @@ choose_fair_black_index::
     pop hl
     pop de
     ret
+
+; black_maybe_paint_last_entity_black: if current spawn index matches chosen index,
+; paint the last allocated entity's sprite TID to black directly in components_sprite.
+; Uses: ball_burst_spawn_idx, ball_burst_black_idx, last_alloc_offset
+; Clobbers: AF, HL
+black_maybe_paint_last_entity_black::
+    ; compare spawn idx vs chosen black idx
+    ld hl, ball_burst_spawn_idx
+    ld a, [hl]
+    ld hl, ball_burst_black_idx
+    cp [hl]
+    ret nz
+    ; get last allocated offset
+    ld hl, last_alloc_offset
+    ld a, [hl]
+    ld h, CMP_SPRITE_H
+    ld l, a
+    inc l                 ; -> X
+    inc l                 ; -> TID
+    ld a, TID_BALL_BLACK
+    ld [hl], a
+    ret

@@ -24,6 +24,7 @@ last_temp_entity: DS 1
 temp_entity: DS 12
 
 ; last allocated entity offset (low byte within component arrays) [unused now]
+last_alloc_offset: DS 1
 
 ; RNG seed for spawn_ball_random
 ball_rand: DS 1
@@ -127,7 +128,12 @@ man_entity_alloc::
 	.found_free_slot:
 	ld [hl], RESERVED_COMPONENT
 
-	; (no need to store last_alloc_offset)
+	; remember low-byte offset of this allocated slot, but preserve HL
+	push hl
+	ld a, l
+	ld hl, last_alloc_offset
+	ld [hl], a
+	pop hl
 
 	ret
 

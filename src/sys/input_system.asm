@@ -127,9 +127,7 @@ spawn_ball_random::
 	pop hl                       ; restore pointer to X
 	ld [hl], a                   ; write X
 
-	; If this spawn's index matches the chosen black index, set TID to black
-	; HL currently points to the X byte
-	call black_maybe_paint_temp_entity_black
+	; Create entity first, then paint black directly on components to avoid any copy issues
 
 	;; patch physics at temp_entity + 8 (vy, vx)
 	ld hl, temp_entity
@@ -148,6 +146,8 @@ spawn_ball_random::
 	;; create entity
 	ld hl, temp_entity
 	call create_one_entity
+	; If this spawn is the chosen black, set its TID now in components_sprite
+	call black_maybe_paint_last_entity_black
 	ret
 
 read_input_and_apply::
@@ -262,3 +262,6 @@ normalize_all_balls_normal::
 	cp SIZEOF_ARRAY_CMP
 	jr nz, .norm_loop
 	ret
+
+;; select_random_black_ball: ensure only one black ball by normalizing all,
+;; then pick a random active ball and set its TID to TID_BALL_BLACK

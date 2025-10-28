@@ -85,25 +85,71 @@ sc_game_init::
    ; Pelota normal (8x16): arriba = ball_sprite, abajo = blank
    MEMCPY_256 ball_sprite, VRAM_TILE_BALL, VRAM_TILE_SIZE
    MEMCPY_256 blank_tile, VRAM_TILE_BALL + VRAM_TILE_SIZE, VRAM_TILE_SIZE
-   ; Pelota negra (8x16): arriba = black_ball, abajo = blank
+   ; Pelota negra (8x16): usar el mismo tile arriba y abajo para que se vea "entera"
    MEMCPY_256 black_ball, VRAM_TILE_BALL_BLACK, VRAM_TILE_SIZE
-   MEMCPY_256 blank_tile, VRAM_TILE_BALL_BLACK + VRAM_TILE_SIZE, VRAM_TILE_SIZE
+   
+   ; Corazón 16x16 usando dos sprites 8x16: izquierda ($66,$67) y derecha ($68,$69)
+   ; Izquierda: top-left (0..15), bottom-left (16..31)
+   ld hl, corazon                    ; top-left
+   ld de, VRAM_TILE_HEART
+   ld b, VRAM_TILE_SIZE
+   call memcpy_256
+   
+   ; Número '1' (8x16): usamos el mismo tile arriba y abajo en $60, $61
+   ld hl, uno_numero                    ; top
+   ld de, VRAM_TILE_ONE
+   ld b, VRAM_TILE_SIZE
+   call memcpy_256
+
+   ; bottom of the 8x16 slot: use blank_tile so the '1' is effectively 8x8
+   MEMCPY_256 blank_tile, VRAM_TILE_ONE + VRAM_TILE_SIZE, VRAM_TILE_SIZE
+   ld hl, corazon
+   ld bc, VRAM_TILE_SIZE
+   add hl, bc                        ; bottom-left
+   ld de, VRAM_TILE_HEART + VRAM_TILE_SIZE
+   ld b, VRAM_TILE_SIZE
+   call memcpy_256
+   ; Derecha: top-right (32..47), bottom-right (48..63)
+   ld hl, corazon
+   ld bc, VRAM_TILE_SIZE
+   add hl, bc
+   add hl, bc                        ; hl = corazon + 32
+   ld de, VRAM_TILE_HEART_R
+   ld b, VRAM_TILE_SIZE
+   call memcpy_256
+   ld hl, corazon
+   ld bc, VRAM_TILE_SIZE
+   add hl, bc
+   add hl, bc
+   add hl, bc                        ; hl = corazon + 48
+   ld de, VRAM_TILE_HEART_R + VRAM_TILE_SIZE
+   ld b, VRAM_TILE_SIZE
+   call memcpy_256
 
    
    .enable_objects
       ld hl, rLCDC
       set rLCDC_OBJ_ENABLE, [hl]
       set rLCDC_OBJ_16x8, [hl]
+      ; Asegurar fondo encendido y mapa en $9800
+      ld hl, rLCDC
+      set 0, [hl]   ; BG enable
+      res 3, [hl]   ; BG map select = $9800
 
     .creat_entities
       ld hl, sc_game_entity_1
 
-   ; Activar fondo (bit 0 = 1)
-   set 0, [hl]
-   ; Usar BG Map en $9800 (bit 3 = 0)
-   res 3, [hl]
-
    
+   call create_one_entity
+
+   ; Create heart UI entity (left half)
+   ld hl, sc_heart_entity
+   call create_one_entity
+   ; Create heart right half (second sprite, X + 8)
+   ld hl, sc_heart_right_entity
+   call create_one_entity
+   ; Create number '1' to the right of the heart
+   ld hl, sc_one_entity
    call create_one_entity
 
    call lcd_on

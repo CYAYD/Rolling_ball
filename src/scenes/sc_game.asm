@@ -49,8 +49,26 @@ sc_game_entity_2::
 
    sc_ball_entity::
    DB ENTITY_WITH_ALL, TAG_BALL, 0, 0               ;; CMP_INFO (tag as BALL)
-   DB 32, 16, $22, %00000000                         ;; CMP_SPRITE (TID $22 - after copying)
+   DB 32, 16, $62, %00000000                         ;; CMP_SPRITE (TID $62 - after copying)
    DB 0, 0, 0, 0                                     ;; CMP_PHYSICS (vy=0 initial, vx=0)
+
+; Heart entity (static UI in top-right)
+sc_heart_entity::
+   DB ENTITY_WITH_ALL, 0, 0, 0                       ;; CMP_INFO (no special TAG)
+   DB 16, 120, $66, %00000000                        ;; CMP_SPRITE (Y=16, X=120, TID $66)
+   DB 0, 0, 0, 0                                     ;; CMP_PHYSICS (no movement)
+
+; Right half of 16x16 heart (second sprite side-by-side)
+sc_heart_right_entity::
+   DB ENTITY_WITH_ALL, 0, 0, 0
+   DB 16, 128, $68, %00000000                        ;; Y=16 (top), X = left+8, TID $68
+   DB 0, 0, 0, 0
+
+; Number '1' placed to the right of the heart (8x16 sprite)
+sc_one_entity::
+   DB ENTITY_WITH_ALL, 0, 0, 0
+   DB 22, 140, $60, %00000000                        ;; Y=16, X=heart_right+8, TID $60
+   DB 0, 0, 0, 0
 
 ; Preset X positions for ball spawns (OAM X coordinates)
 ball_spawn_positions_x::
