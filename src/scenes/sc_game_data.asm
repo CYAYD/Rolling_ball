@@ -54,6 +54,13 @@ sc_game_init::
    call man_entity_init
    call sys_render_init
 
+   ; Reset BG scroll to (0,0) so UI rows match expected positions
+   xor a
+   ld hl, rSCY
+   ld [hl], a
+   ld hl, rSCX
+   ld [hl], a
+
    .init_palettes_and_tiles
    SET_BGP DEFAULT_PAL
       SET_OBP1 DEFAULT_PAL
@@ -62,7 +69,7 @@ sc_game_init::
 
 ; ----- Carga tiles del mapa en VRAM -----
    ld hl, TileLabel
-   ld de, $8000
+   ld de, VRAM_TILE_START
    ld bc, (TileLabelEnd - TileLabel) / 16
 
    .copy_loop:
@@ -77,8 +84,8 @@ sc_game_init::
 
    ; --- Cargar el tilemap en VRAM --------------------------
    ld hl, tilemap       ; Dirección del tilemap ROM
-   ld de, $9800         ; VRAM background map
-   ld bc, 32*32         ; 360 bytes
+   ld de, BG_MAP0         ; VRAM background map
+   ld bc, BG_WIDTH*BG_HEIGHT  ; 1024 bytes
    call memcpy_bc       ; OJO, NO memcpy_256
 
    ; Ahora cargamos los tiles de sprites OBJ (después del BG para evitar sobrescrituras)
@@ -95,6 +102,37 @@ sc_game_init::
    ld b, VRAM_TILE_SIZE
    call memcpy_256
    
+   ; --- UI: preparar el dígito '0' y dibujar "0000" arriba a la izquierda ---
+   ; Copiamos el tile del '0' a VRAM (índice TID_DIGIT0)
+   MEMCPY_GLYPH cero_numero, TID_DIGIT0
+   ; Copiamos el tile del '6' a VRAM (índice TID_DIGIT6)
+   MEMCPY_GLYPH seis_numero, TID_DIGIT6
+   ; Aseguramos un tile en blanco en TID_SPACE para separaciones
+   MEMCPY_GLYPH blank_tile, TID_SPACE
+   ; Escribimos cuatro '0' en el mapa BG en SCORE_ROW, desde SCORE_COL
+   LD_DE_BG SCORE_ROW, SCORE_COL
+   ld a, TID_DIGIT0
+   ld [de], a
+   inc de
+   ld [de], a
+   inc de
+   ld [de], a
+   inc de
+   ld [de], a
+   ; Separador y "60" a continuación
+   inc de
+   ld a, TID_SPACE
+   ld [de], a
+   ; Espacio adicional para mover "60" un poco a la derecha
+   inc de
+   ld a, TID_SPACE
+   ld [de], a
+   inc de
+   ld a, TID_DIGIT6
+   ld [de], a
+   inc de
+   ld a, TID_DIGIT0
+   ld [de], a
    ; Número '1' (8x16): usamos el mismo tile arriba y abajo en $60, $61
    ld hl, uno_numero                    ; top
    ld de, VRAM_TILE_ONE

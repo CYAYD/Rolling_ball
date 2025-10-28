@@ -4,6 +4,8 @@ DEF rOBP1				equ $FF48
 DEF rOBP2				equ $FF49
 DEF rLCDC				equ $FF40
 DEF rDIV                equ $FF04
+DEF rSCY                equ $FF42
+DEF rSCX                equ $FF43
 
 
 DEF OAM_START	equ $FE00
@@ -21,6 +23,7 @@ DEF VRAM_TILE_32		equ VRAM_TILE_START + ($20 * VRAM_TILE_SIZE)
 ; BG map base and dimensions
 DEF BG_MAP0             equ $9800
 DEF BG_WIDTH            equ 32
+DEF BG_HEIGHT           equ 32
 
 DEF rP1               equ $FF00
 
@@ -64,6 +67,8 @@ DEF TID_SPACE         equ $57
 DEF TID_P             equ $58
 DEF TID_S             equ $59
 DEF TID_T             equ $5A
+DEF TID_DIGIT0        equ $5B
+DEF TID_DIGIT6        equ $5C
 
 ; --- Spawn/burst config ---
 DEF SPAWN_FPS_FRAMES      equ $3C    ; 60 frames per second
@@ -112,4 +117,7 @@ DEF RESTART1_ROW          equ 9   ; "PRESS START"
 DEF RESTART1_COL          equ 4
 DEF RESTART2_ROW          equ 10  ; "TO RESTART"
 DEF RESTART2_COL          equ 5
+; Score UI position (top-left area)
+DEF SCORE_ROW             equ 0
+DEF SCORE_COL             equ 1
 
