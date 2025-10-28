@@ -102,11 +102,18 @@ sc_game_init::
    ld b, VRAM_TILE_SIZE
    call memcpy_256
    
-   ; --- UI: preparar el dígito '0' y dibujar "0000" arriba a la izquierda ---
-   ; Copiamos el tile del '0' a VRAM (índice TID_DIGIT0)
-   MEMCPY_GLYPH cero_numero, TID_DIGIT0
-   ; Copiamos el tile del '6' a VRAM (índice TID_DIGIT6)
-   MEMCPY_GLYPH seis_numero, TID_DIGIT6
+   ; --- UI Score/Timer: cargar dígitos 0..9 y dibujar "0000" ---
+   ; Cargar todos los dígitos 0..9 en TID_DIGIT0..9
+   MEMCPY_GLYPH cero_numero,   TID_DIGIT0
+   MEMCPY_GLYPH uno_numero,    TID_DIGIT1
+   MEMCPY_GLYPH dos_numero,    TID_DIGIT2
+   MEMCPY_GLYPH tres_numero,   TID_DIGIT3
+   MEMCPY_GLYPH cuatro_numero, TID_DIGIT4
+   MEMCPY_GLYPH cinco_numero,  TID_DIGIT5
+   MEMCPY_GLYPH seis_numero,   TID_DIGIT6
+   MEMCPY_GLYPH siete_numero,  TID_DIGIT7
+   MEMCPY_GLYPH ocho_numero,   TID_DIGIT8
+   MEMCPY_GLYPH nueve_numero,  TID_DIGIT9
    ; Aseguramos un tile en blanco en TID_SPACE para separaciones
    MEMCPY_GLYPH blank_tile, TID_SPACE
    ; Escribimos cuatro '0' en el mapa BG en SCORE_ROW, desde SCORE_COL
@@ -119,7 +126,7 @@ sc_game_init::
    ld [de], a
    inc de
    ld [de], a
-   ; Separador y "60" a continuación
+   ; Separador y espacio extra antes del tiempo (posiciona "60")
    inc de
    ld a, TID_SPACE
    ld [de], a
@@ -127,12 +134,7 @@ sc_game_init::
    inc de
    ld a, TID_SPACE
    ld [de], a
-   inc de
-   ld a, TID_DIGIT6
-   ld [de], a
-   inc de
-   ld a, TID_DIGIT0
-   ld [de], a
+   ; (El contador se dibuja tras timer_init más abajo)
    ; Número '1' (8x16): usamos el mismo tile arriba y abajo en $60, $61
    ld hl, uno_numero                    ; top
    ld de, VRAM_TILE_ONE
@@ -197,6 +199,10 @@ sc_game_init::
    ld hl, sc_heart3_right_entity
    call create_one_entity
 
+   ; Inicializar puntuación a 0000 (y dibujarla)
+   call score_init
+   ; Inicializar el contador de tiempo (60s) y dibujar "60"
+   call timer_init
    call lcd_on
    
    ret
@@ -208,6 +214,9 @@ sc_game_run::
       call read_input_and_apply
       call process_spawns
       call sys_collision_update
+      call timer_update
+      ; Actualiza HUD de score si hay cambios (una sola vez por frame)
+      call score_update_ui
       call sys_render_update
    jr .loop
 

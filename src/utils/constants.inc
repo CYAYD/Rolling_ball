@@ -67,8 +67,20 @@ DEF TID_SPACE         equ $57
 DEF TID_P             equ $58
 DEF TID_S             equ $59
 DEF TID_T             equ $5A
-DEF TID_DIGIT0        equ $5B
-DEF TID_DIGIT6        equ $5C
+; Base for numeric digits 0..9 (contiguous)
+; Mover dígitos a un banco que NO colisione con sprites OBJ ($60..$69)
+; BG tiles del mapa usan 0..42 aprox, letras usan $50..$5A; usamos $40..$49 para dígitos
+DEF TID_DIGIT_BASE    equ $40
+DEF TID_DIGIT0        equ TID_DIGIT_BASE + 0
+DEF TID_DIGIT1        equ TID_DIGIT_BASE + 1
+DEF TID_DIGIT2        equ TID_DIGIT_BASE + 2
+DEF TID_DIGIT3        equ TID_DIGIT_BASE + 3
+DEF TID_DIGIT4        equ TID_DIGIT_BASE + 4
+DEF TID_DIGIT5        equ TID_DIGIT_BASE + 5
+DEF TID_DIGIT6        equ TID_DIGIT_BASE + 6
+DEF TID_DIGIT7        equ TID_DIGIT_BASE + 7
+DEF TID_DIGIT8        equ TID_DIGIT_BASE + 8
+DEF TID_DIGIT9        equ TID_DIGIT_BASE + 9
 
 ; --- Spawn/burst config ---
 DEF SPAWN_FPS_FRAMES      equ $3C    ; 60 frames per second
@@ -120,4 +132,6 @@ DEF RESTART2_COL          equ 5
 ; Score UI position (top-left area)
 DEF SCORE_ROW             equ 0
 DEF SCORE_COL             equ 1
+; Column where the countdown seconds start (after 4 zeros and 2 spaces)
+DEF SCORE_SECS_COL        equ SCORE_COL + 6
 

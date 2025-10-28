@@ -116,6 +116,8 @@ sys_collision_update::
     ld a, [hl]
     cp TID_BALL_BLACK
     jp nz, .despawn_only_ball
+    ; Penalización por pelota negra: -500 (hasta 0000)
+    call score_sub_500
     ; --- Black ball hit: lose a heart, or game over if only one heart remains ---
     ; Use hearts_left counter for robustness
     ld hl, hearts_left
@@ -136,6 +138,8 @@ sys_collision_update::
     ret
 
 .despawn_only_ball:
+    ; Normal ball: +100 puntos y eliminar la pelota
+    call score_add_100
     ld h, CMP_INFO_H
     ld l, e
     res CMP_BIT_USED, [hl]
