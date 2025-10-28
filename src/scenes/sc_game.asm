@@ -37,6 +37,29 @@ sc_game_fence_tiles::
    DB $99,$E7,$99,$E7,$99,$FF,$A5,$E7
    DB $A5,$E7,$A5,$FF,$99,$FF,$FF,$FF
 
+; 8x8 tiles for "GAME OVER" letters (simple blocky glyphs)
+tile_G::
+   DB $3C,$3C,$42,$42,$80,$BE,$80,$BE
+   DB $9E,$9E,$82,$82,$42,$42,$3C,$3C
+tile_A::
+   DB $3C,$3C,$42,$42,$81,$81,$81,$81
+   DB $FF,$FF,$81,$81,$81,$81,$81,$81
+tile_M::
+   DB $81,$81,$C3,$C3,$A5,$A5,$99,$99
+   DB $81,$81,$81,$81,$81,$81,$81,$81
+tile_E::
+   DB $FF,$FF,$80,$80,$80,$80,$FE,$FE
+   DB $80,$80,$80,$80,$80,$80,$FF,$FF
+tile_O::
+   DB $3C,$3C,$42,$42,$81,$81,$81,$81
+   DB $81,$81,$81,$81,$42,$42,$3C,$3C
+tile_V::
+   DB $81,$81,$81,$81,$81,$81,$42,$42
+   DB $24,$24,$24,$24,$18,$18,$18,$18
+tile_R::
+   DB $FE,$FE,$81,$81,$81,$81,$FE,$FE
+   DB $A0,$A0,$90,$90,$88,$88,$84,$84
+
 sc_game_entity_1::
    DB  ENTITY_WITH_ALL,  TAG_PLAYER,   0, 0                 ;; CMP_INFO
    DB 32, 16, $20, %00000000                       ;; CMP_SPRITE

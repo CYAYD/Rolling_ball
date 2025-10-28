@@ -97,6 +97,11 @@ sys_physics_update_one_entity::
 	ret
 
 sys_physics_update::
+	; stop physics updates if game over
+	ld hl, game_over_flag
+	ld a, [hl]
+	cp 0
+	ret nz
 	
 	ld hl, sys_physics_update_one_entity
 	call man_entity_for_each

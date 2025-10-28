@@ -88,4 +88,3 @@ DEF BALL_SPAWN_STRIDE     equ 3      ; coprime with 10 to ensure unique sequence
 DEF STAGGER_BASE_FRAMES   equ 60     ; base delay before the first ball starts (~1.0s)
 DEF STAGGER_STEP_FRAMES   equ 48     ; delay increment between balls (~0.8s)
 DEF STAGGER_MAX_FRAMES    equ 252    ; cap fits 5-ball burst: 60,108,156,204,252
-

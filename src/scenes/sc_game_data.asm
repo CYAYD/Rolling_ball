@@ -168,3 +168,71 @@ sc_game_run::
 
    
    ret
+
+; --- GAME OVER flow ---
+sc_game_over::
+   ; set game over flag
+   ld hl, game_over_flag
+   ld a, 1
+   ld [hl], a
+   ; disable OBJ to hide any sprites immediately
+   ld hl, rLCDC
+   res rLCDC_OBJ_ENABLE, [hl]
+   ; clear all component arrays and counters (WRAM)
+   ld hl, components_info
+   ld b, SIZEOF_ARRAY_CMP
+   xor a
+   call memset_256
+   ld hl, components_sprite
+   ld b, SIZEOF_ARRAY_CMP
+   call memset_256
+   ld hl, components_physics
+   ld b, SIZEOF_ARRAY_CMP
+   call memset_256
+   ld hl, alive_entities
+   xor a
+   ld [hl], a
+   ; Safely draw GAME OVER on BG with LCD off to allow VRAM writes
+   call lcd_off
+   call draw_game_over
+   call lcd_on
+   ret
+
+draw_game_over::
+   ; Copy letter tiles to BG VRAM at tile indices $50..$56
+   MEMCPY_256 tile_G, VRAM_TILE_START + ($50 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
+   MEMCPY_256 tile_A, VRAM_TILE_START + ($51 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
+   MEMCPY_256 tile_M, VRAM_TILE_START + ($52 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
+   MEMCPY_256 tile_E, VRAM_TILE_START + ($53 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
+   MEMCPY_256 tile_O, VRAM_TILE_START + ($54 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
+   MEMCPY_256 tile_V, VRAM_TILE_START + ($55 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
+   MEMCPY_256 tile_R, VRAM_TILE_START + ($56 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
+   ; Write "GAME OVER" centered-ish on row 9, starting col 6
+   ld de, $9800 + (9*32) + 6
+   ld a, $50 ; G
+   ld [de], a
+   inc de
+   ld a, $51 ; A
+   ld [de], a
+   inc de
+   ld a, $52 ; M
+   ld [de], a
+   inc de
+   ld a, $53 ; E
+   ld [de], a
+   inc de
+   xor a      ; space
+   ld [de], a
+   inc de
+   ld a, $54 ; O
+   ld [de], a
+   inc de
+   ld a, $55 ; V
+   ld [de], a
+   inc de
+   ld a, $53 ; E
+   ld [de], a
+   inc de
+   ld a, $56 ; R
+   ld [de], a
+   ret

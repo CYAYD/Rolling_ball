@@ -5,6 +5,11 @@ INCLUDE "utils/macros.inc"
 SECTION "Input System", ROM0
 
 process_spawns::
+	; stop spawns if game over
+	ld hl, game_over_flag
+	ld a, [hl]
+	cp 0
+	ret nz
 	;; Every SPAWN_BURST_SECONDS seconds, spawn SPAWN_BURST_COUNT balls
 	;; Mix RNG each frame to avoid periodic repeats
 	ld hl, rng_tick
@@ -151,6 +156,24 @@ spawn_ball_random::
 	ret
 
 read_input_and_apply::
+	; If game is over, only listen for Start to restart the scene
+	ld hl, game_over_flag
+	ld a, [hl]
+	cp 0
+	jr z, .normal_input
+	; Select buttons group (P15 low)
+	ld a, %00010000    ; 0x10 = select buttons (A,B,Select,Start)
+	ld [rP1], a
+	ld a, [rP1]
+	cpl
+	and P1_BTN_START
+	jr z, .end_input
+	; Restart scene
+	call sc_game_init
+.end_input:
+	ret
+
+.normal_input:
 	;; Read P1 register (note: Game Boy P1 has bits cleared when pressed; here
 	;; we expect the hardware wired such that pressed bits will be 0. Depending
 	;; on your platform you may need to invert. We'll read and invert to get 1=pressed.

@@ -18,6 +18,8 @@ components_physics: 	DS SIZEOF_ARRAY_CMP
 DS ALIGN[8]
 
 alive_entities: DS 1
+; game over flag: 0=running, 1=over
+game_over_flag: DS 1
 
 ; temporary buffer to build an entity in WRAM before allocating
 last_temp_entity: DS 1
@@ -97,6 +99,9 @@ man_entity_init::
 	ld [hl], a
 	; init black used mask to 0
 	ld hl, ball_black_used_mask
+	ld [hl], a
+	; init game over flag = 0
+	ld hl, game_over_flag
 	ld [hl], a
   
   .zero_cmps_info

@@ -65,13 +65,13 @@ sys_collision_update::
     ld a, [hl]
     and VALID_ENTITY
     cp VALID_ENTITY
-    jr nz, .next_ball
+    jp nz, .next_ball
     ld h, CMP_INFO_H
     ld l, e
     inc l
     ld a, [hl]
     cp TAG_BALL
-    jr nz, .next_ball
+    jp nz, .next_ball
     ; Read ball Y,X
     ld h, CMP_SPRITE_H
     ld l, e
@@ -104,7 +104,21 @@ sys_collision_update::
     cp [hl]
     jp z, .next_ball
     jp c, .next_ball
-    ; Collision detected: despawn this ball
+    ; Collision detected: if ball is black, remove player, balls, heart and number (clear all entities).
+    ; Otherwise, despawn only this ball.
+    ; Check sprite TID of the colliding ball: components_sprite + 2
+    ld h, CMP_SPRITE_H
+    ld l, e
+    inc l
+    inc l
+    ld a, [hl]
+    cp TID_BALL_BLACK
+    jp nz, .despawn_only_ball
+    ; --- Black ball hit: trigger game over ---
+    call sc_game_over
+    ret
+
+.despawn_only_ball:
     ld h, CMP_INFO_H
     ld l, e
     res CMP_BIT_USED, [hl]
@@ -122,5 +136,5 @@ sys_collision_update::
     add SIZEOF_CMP
     ld e, a
     cp SIZEOF_ARRAY_CMP
-    jr nz, .balls_loop
+    jp nz, .balls_loop
     ret
