@@ -1,5 +1,5 @@
 SUMMARY:
-	ROM0: 4084 bytes used / 12300 free
+	ROM0: 4082 bytes used / 12302 free
 	WRAM0: 800 bytes used / 3296 free
 
 ROM0 bank #0:
@@ -35,139 +35,140 @@ ROM0 bank #0:
 	SECTION: $0558-$0807 ($02b0 bytes) ["Tiles"]
 	         $0558 = TileLabel
 	         $0808 = TileLabelEnd
-	SECTION: $0808-$0a5a ($0253 bytes) ["Scene Game"]
-	         $0808 = create_one_entity
-	         $0809 = create_one_entity.reserve_space_for_entity
-	         $080c = create_one_entity.copy_info_cmp
-	         $0816 = create_one_entity.copy_sprite_cmp
-	         $0824 = create_one_entity.copy_physics_cmp
-	         $0831 = sc_game_init
-	         $0834 = sc_game_init.init_managers_and_systems
-	         $083a = sc_game_init.init_palettes_and_tiles
-	         $0858 = sc_game_init.copy_loop
-	         $08e0 = sc_game_init.enable_objects
-	         $08ee = sc_game_init.creat_entities
-	         $091c = sc_game_run
-	         $091c = sc_game_run.loop
-	         $092e = sc_game_over
-	         $0961 = draw_game_over
-	SECTION: $0a5b-$0c10 ($01b6 bytes) ["Scene Game Data"]
-	         $0a5b = uno_numero
-	         $0a6b = corazon
-	         $0aab = ball_sprite
-	         $0abb = black_ball
-	         $0acb = blank_tile
-	         $0adb = sc_game_fence_tiles
-	         $0afb = tile_G
-	         $0b0b = tile_A
-	         $0b1b = tile_M
-	         $0b2b = tile_E
-	         $0b3b = tile_O
-	         $0b4b = tile_V
-	         $0b5b = tile_R
-	         $0b6b = tile_P
-	         $0b7b = tile_S
-	         $0b8b = tile_T
-	         $0b9b = sc_game_entity_1
-	         $0ba7 = sc_game_entity_2
-	         $0bb3 = sc_ball_entity
-	         $0bbf = sc_heart_entity
-	         $0bcb = sc_heart_right_entity
-	         $0bd7 = sc_heart2_entity
-	         $0be3 = sc_heart2_right_entity
-	         $0bef = sc_heart3_entity
-	         $0bfb = sc_heart3_right_entity
-	         $0c07 = ball_spawn_positions_x
-	SECTION: $0c11-$0d85 ($0175 bytes) ["Collision System Code"]
-	         $0c11 = sys_collision_update
-	         $0c1d = sys_collision_update.find_player_loop
-	         $0c43 = sys_collision_update.next_find_player
-	         $0c4b = sys_collision_update.have_player
-	         $0c54 = sys_collision_update.balls_loop
-	         $0cc2 = sys_collision_update.trigger_game_over
-	         $0cc6 = sys_collision_update.despawn_only_ball
-	         $0cda = sys_collision_update.next_ball
-	         $0ce4 = remove_one_heart_pair
-	         $0cf1 = remove_one_heart_pair.scan_hearts
-	         $0d11 = remove_one_heart_pair.next_scan
-	         $0d34 = remove_one_heart_pair.assume_left
-	         $0d38 = remove_one_heart_pair.have_neighbor
-	         $0d47 = remove_one_heart_pair.scan_pair
-	         $0d68 = remove_one_heart_pair.next_pair
-	         $0d70 = remove_one_heart_pair.done_pair
-	         $0d71 = despawn_entity_at_e
-	SECTION: $0d86-$0ed7 ($0152 bytes) ["Input System"]
-	         $0d86 = process_spawns
-	         $0dd4 = process_spawns.have_quota
-	         $0dd7 = process_spawns.burst_loop
-	         $0de7 = process_spawns.st_no_cap
-	         $0df0 = process_spawns.no_burst
-	         $0df1 = spawn_ball_random
-	         $0e0e = spawn_ball_random.mul_loop
-	         $0e16 = spawn_ball_random.mod_loop
-	         $0e1e = spawn_ball_random.have_idx
-	         $0e44 = read_input_and_apply
-	         $0e5c = read_input_and_apply.end_input
-	         $0e5d = read_input_and_apply.normal_input
-	         $0e77 = read_input_and_apply.move_no_up
-	         $0e7e = read_input_and_apply.move_no_down
-	         $0e8a = read_input_and_apply.move_no_right
-	         $0e91 = read_input_and_apply.move_no_left
-	         $0e93 = count_balls
-	         $0e97 = count_balls.cb_loop
-	         $0eab = count_balls.cb_next
-	         $0eb5 = normalize_all_balls_normal
-	         $0eb7 = normalize_all_balls_normal.norm_loop
-	         $0ecf = normalize_all_balls_normal.norm_next
-	SECTION: $0ed8-$0f6e ($0097 bytes) ["Black Select System Code"]
-	         $0ed8 = black_select_begin
-	         $0ee2 = black_maybe_paint_temp_entity_black
-	         $0ef2 = black_maybe_paint_temp_entity_black.no_black
-	         $0ef3 = choose_fair_black_index
-	         $0efd = choose_fair_black_index.mod5
-	         $0f05 = choose_fair_black_index.idx_ready
-	         $0f08 = choose_fair_black_index.try_loop
-	         $0f13 = choose_fair_black_index.shift_loop
-	         $0f1a = choose_fair_black_index.mask_is_one
-	         $0f1c = choose_fair_black_index.mask_ready
-	         $0f21 = choose_fair_black_index.next_idx
-	         $0f28 = choose_fair_black_index.store_idx
-	         $0f36 = choose_fair_black_index.mod_b
-	         $0f3c = choose_fair_black_index.have_d
-	         $0f44 = choose_fair_black_index.shift2
-	         $0f4b = choose_fair_black_index.mask_one2
-	         $0f4d = choose_fair_black_index.mask_ok2
-	         $0f4e = choose_fair_black_index.found
-	         $0f59 = black_maybe_paint_last_entity_black
-	SECTION: $0f6f-$0fda ($006c bytes) ["Physics System Code"]
-	         $0f6f = sys_physics_update_one_entity
-	         $0f84 = sys_physics_update_one_entity.no_delay
-	         $0f94 = sys_physics_update_one_entity.store_tick_and_ret_b
-	         $0f96 = sys_physics_update_one_entity.after_tick_b
-	         $0fa3 = sys_physics_update_one_entity.grav_store
-	         $0fa5 = sys_physics_update_one_entity.no_gravity
-	         $0fa5 = sys_physics_update_one_entity.hl_phy_de_spr
-	         $0faa = sys_physics_update_one_entity.y_plus_vy
-	         $0faf = sys_physics_update_one_entity.x_plus_vx
-	         $0fcc = sys_physics_update_one_entity.no_despawn
-	         $0fcd = sys_physics_update
-	SECTION: $0fdb-$1041 ($0067 bytes) ["Utils"]
-	         $0fdb = lcd_off
-	         $0fe6 = lcd_on
-	         $0fec = wait_vblank_start
-	         $0ff1 = wait_vblank_start.loop
-	         $0ff5 = memcpy_256
-	         $0ffc = memset_256
-	         $1001 = memcpy_bc
-	         $100a = simulated_call_hl
-	         $100b = rand8
-	         $1016 = rand8.no_xor
-	         $1018 = mul8_high
-	         $101e = mul8_high.mul_loop
-	         $102b = mul8_high.no_add
-	         $1034 = rand_range
-	EMPTY: $1042-$3fff ($2fbe bytes)
-	TOTAL EMPTY: $300c bytes
+	SECTION: $0808-$09bd ($01b6 bytes) ["Scene Game Data"]
+	         $0808 = uno_numero
+	         $0818 = corazon
+	         $0858 = ball_sprite
+	         $0868 = black_ball
+	         $0878 = blank_tile
+	         $0888 = sc_game_fence_tiles
+	         $08a8 = tile_G
+	         $08b8 = tile_A
+	         $08c8 = tile_M
+	         $08d8 = tile_E
+	         $08e8 = tile_O
+	         $08f8 = tile_V
+	         $0908 = tile_R
+	         $0918 = tile_P
+	         $0928 = tile_S
+	         $0938 = tile_T
+	         $0948 = sc_game_entity_1
+	         $0954 = sc_game_entity_2
+	         $0960 = sc_ball_entity
+	         $096c = sc_heart_entity
+	         $0978 = sc_heart_right_entity
+	         $0984 = sc_heart2_entity
+	         $0990 = sc_heart2_right_entity
+	         $099c = sc_heart3_entity
+	         $09a8 = sc_heart3_right_entity
+	         $09b4 = ball_spawn_positions_x
+	SECTION: $09be-$0b30 ($0173 bytes) ["Collision System Code"]
+	         $09be = sys_collision_update
+	         $09ca = sys_collision_update.find_player_loop
+	         $09f0 = sys_collision_update.next_find_player
+	         $09f8 = sys_collision_update.have_player
+	         $0a01 = sys_collision_update.balls_loop
+	         $0a6f = sys_collision_update.trigger_game_over
+	         $0a73 = sys_collision_update.despawn_only_ball
+	         $0a87 = sys_collision_update.next_ball
+	         $0a91 = remove_one_heart_pair
+	         $0a9e = remove_one_heart_pair.scan_hearts
+	         $0abe = remove_one_heart_pair.next_scan
+	         $0ae1 = remove_one_heart_pair.assume_left
+	         $0ae5 = remove_one_heart_pair.have_neighbor
+	         $0af2 = remove_one_heart_pair.scan_pair
+	         $0b13 = remove_one_heart_pair.next_pair
+	         $0b1b = remove_one_heart_pair.done_pair
+	         $0b1c = despawn_entity_at_e
+	SECTION: $0b31-$0c82 ($0152 bytes) ["Input System"]
+	         $0b31 = process_spawns
+	         $0b7f = process_spawns.have_quota
+	         $0b82 = process_spawns.burst_loop
+	         $0b92 = process_spawns.st_no_cap
+	         $0b9b = process_spawns.no_burst
+	         $0b9c = spawn_ball_random
+	         $0bb9 = spawn_ball_random.mul_loop
+	         $0bc1 = spawn_ball_random.mod_loop
+	         $0bc9 = spawn_ball_random.have_idx
+	         $0bef = read_input_and_apply
+	         $0c07 = read_input_and_apply.end_input
+	         $0c08 = read_input_and_apply.normal_input
+	         $0c22 = read_input_and_apply.move_no_up
+	         $0c29 = read_input_and_apply.move_no_down
+	         $0c35 = read_input_and_apply.move_no_right
+	         $0c3c = read_input_and_apply.move_no_left
+	         $0c3e = count_balls
+	         $0c42 = count_balls.cb_loop
+	         $0c56 = count_balls.cb_next
+	         $0c60 = normalize_all_balls_normal
+	         $0c62 = normalize_all_balls_normal.norm_loop
+	         $0c7a = normalize_all_balls_normal.norm_next
+	SECTION: $0c83-$0daf ($012d bytes) ["Scene Game Over"]
+	         $0c83 = sc_game_over
+	         $0cb6 = draw_game_over
+	SECTION: $0db0-$0ed5 ($0126 bytes) ["Scene Game"]
+	         $0db0 = create_one_entity
+	         $0db1 = create_one_entity.reserve_space_for_entity
+	         $0db4 = create_one_entity.copy_info_cmp
+	         $0dbe = create_one_entity.copy_sprite_cmp
+	         $0dcc = create_one_entity.copy_physics_cmp
+	         $0dd9 = sc_game_init
+	         $0ddc = sc_game_init.init_managers_and_systems
+	         $0de2 = sc_game_init.init_palettes_and_tiles
+	         $0e00 = sc_game_init.copy_loop
+	         $0e88 = sc_game_init.enable_objects
+	         $0e96 = sc_game_init.creat_entities
+	         $0ec4 = sc_game_run
+	         $0ec4 = sc_game_run.loop
+	SECTION: $0ed6-$0f6c ($0097 bytes) ["Black Select System Code"]
+	         $0ed6 = black_select_begin
+	         $0ee0 = black_maybe_paint_temp_entity_black
+	         $0ef0 = black_maybe_paint_temp_entity_black.no_black
+	         $0ef1 = choose_fair_black_index
+	         $0efb = choose_fair_black_index.mod5
+	         $0f03 = choose_fair_black_index.idx_ready
+	         $0f06 = choose_fair_black_index.try_loop
+	         $0f11 = choose_fair_black_index.shift_loop
+	         $0f18 = choose_fair_black_index.mask_is_one
+	         $0f1a = choose_fair_black_index.mask_ready
+	         $0f1f = choose_fair_black_index.next_idx
+	         $0f26 = choose_fair_black_index.store_idx
+	         $0f34 = choose_fair_black_index.mod_b
+	         $0f3a = choose_fair_black_index.have_d
+	         $0f42 = choose_fair_black_index.shift2
+	         $0f49 = choose_fair_black_index.mask_one2
+	         $0f4b = choose_fair_black_index.mask_ok2
+	         $0f4c = choose_fair_black_index.found
+	         $0f57 = black_maybe_paint_last_entity_black
+	SECTION: $0f6d-$0fd8 ($006c bytes) ["Physics System Code"]
+	         $0f6d = sys_physics_update_one_entity
+	         $0f82 = sys_physics_update_one_entity.no_delay
+	         $0f92 = sys_physics_update_one_entity.store_tick_and_ret_b
+	         $0f94 = sys_physics_update_one_entity.after_tick_b
+	         $0fa1 = sys_physics_update_one_entity.grav_store
+	         $0fa3 = sys_physics_update_one_entity.no_gravity
+	         $0fa3 = sys_physics_update_one_entity.hl_phy_de_spr
+	         $0fa8 = sys_physics_update_one_entity.y_plus_vy
+	         $0fad = sys_physics_update_one_entity.x_plus_vx
+	         $0fca = sys_physics_update_one_entity.no_despawn
+	         $0fcb = sys_physics_update
+	SECTION: $0fd9-$103f ($0067 bytes) ["Utils"]
+	         $0fd9 = lcd_off
+	         $0fe4 = lcd_on
+	         $0fea = wait_vblank_start
+	         $0fef = wait_vblank_start.loop
+	         $0ff3 = memcpy_256
+	         $0ffa = memset_256
+	         $0fff = memcpy_bc
+	         $1008 = simulated_call_hl
+	         $1009 = rand8
+	         $1014 = rand8.no_xor
+	         $1016 = mul8_high
+	         $101c = mul8_high.mul_loop
+	         $1029 = mul8_high.no_add
+	         $1032 = rand_range
+	EMPTY: $1040-$3fff ($2fc0 bytes)
+	TOTAL EMPTY: $300e bytes
 
 WRAM0 bank #0:
 	SECTION: $c000-$c31b ($031c bytes) ["Entity Manager Data"]

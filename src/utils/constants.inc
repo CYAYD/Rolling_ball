@@ -18,6 +18,9 @@ DEF VBLANK_START_LINE	equ $90
 DEF VRAM_TILE_START		equ $8000
 DEF VRAM_TILE_SIZE		equ $10
 DEF VRAM_TILE_32		equ VRAM_TILE_START + ($20 * VRAM_TILE_SIZE)
+; BG map base and dimensions
+DEF BG_MAP0             equ $9800
+DEF BG_WIDTH            equ 32
 
 DEF rP1               equ $FF00
 
@@ -48,6 +51,19 @@ DEF TID_BALL          equ $62
 DEF TID_BALL_BLACK    equ $64
 DEF TID_HEART         equ $66
 DEF TID_HEART_R       equ $68
+
+; BG glyph tile IDs for "GAME OVER" and restart prompt
+DEF TID_G             equ $50
+DEF TID_A             equ $51
+DEF TID_M             equ $52
+DEF TID_E             equ $53
+DEF TID_O             equ $54
+DEF TID_V             equ $55
+DEF TID_R             equ $56
+DEF TID_SPACE         equ $57
+DEF TID_P             equ $58
+DEF TID_S             equ $59
+DEF TID_T             equ $5A
 
 ; --- Spawn/burst config ---
 DEF SPAWN_FPS_FRAMES      equ $3C    ; 60 frames per second
@@ -88,3 +104,12 @@ DEF BALL_SPAWN_STRIDE     equ 3      ; coprime with 10 to ensure unique sequence
 DEF STAGGER_BASE_FRAMES   equ 60     ; base delay before the first ball starts (~1.0s)
 DEF STAGGER_STEP_FRAMES   equ 48     ; delay increment between balls (~0.8s)
 DEF STAGGER_MAX_FRAMES    equ 252    ; cap fits 5-ball burst: 60,108,156,204,252
+
+; --- UI text positions (BG rows/cols) ---
+DEF GAME_OVER_ROW         equ 7
+DEF GAME_OVER_COL         equ 6
+DEF RESTART1_ROW          equ 9   ; "PRESS START"
+DEF RESTART1_COL          equ 4
+DEF RESTART2_ROW          equ 10  ; "TO RESTART"
+DEF RESTART2_COL          equ 5
+

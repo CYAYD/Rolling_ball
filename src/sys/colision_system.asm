@@ -232,8 +232,7 @@ remove_one_heart_pair::
     ; despawn selected entity now
     push de              ; save neighbor X in D and selection offset in E via stack
     push bc              ; save B=C=Y,X (for matching)
-    ld e, heart_best_off ; reload selection offset? not needed; E already points to selected
-    ; but ensure E still equals selected offset; restore E from heart_best_off
+    ; Ensure E equals selected offset; restore from heart_best_off
     ld hl, heart_best_off
     ld e, [hl]
     call despawn_entity_at_e
