@@ -77,20 +77,36 @@ sc_game_entity_2::
 
 ; Heart entity (static UI in top-right)
 sc_heart_entity::
-   DB ENTITY_WITH_ALL, 0, 0, 0                       ;; CMP_INFO (no special TAG)
-   DB 16, 120, $66, %00000000                        ;; CMP_SPRITE (Y=16, X=120, TID $66)
+   DB ENTITY_WITH_ALL, TAG_HEART, 0, 0                ;; CMP_INFO (tag as HEART)
+   DB 16, 112, $66, %00000000                        ;; CMP_SPRITE (Y=16, X=104, TID $66)
    DB 0, 0, 0, 0                                     ;; CMP_PHYSICS (no movement)
 
 ; Right half of 16x16 heart (second sprite side-by-side)
 sc_heart_right_entity::
-   DB ENTITY_WITH_ALL, 0, 0, 0
-   DB 16, 128, $68, %00000000                        ;; Y=16 (top), X = left+8, TID $68
+   DB ENTITY_WITH_ALL, TAG_HEART, 0, 0
+   DB 16, 120, $68, %00000000                        ;; Y=16 (top), X = left+8, TID $68
    DB 0, 0, 0, 0
 
-; Number '1' placed to the right of the heart (8x16 sprite)
-sc_one_entity::
-   DB ENTITY_WITH_ALL, 0, 0, 0
-   DB 22, 140, $60, %00000000                        ;; Y=16, X=heart_right+8, TID $60
+; Second heart (to the right): left and right halves
+sc_heart2_entity::
+   DB ENTITY_WITH_ALL, TAG_HEART, 0, 0
+   DB 16, 128, $66, %00000000                        ;; Y=16, X=120, TID $66 (left half)
+   DB 0, 0, 0, 0
+
+sc_heart2_right_entity::
+   DB ENTITY_WITH_ALL, TAG_HEART, 0, 0
+   DB 16, 136, $68, %00000000                        ;; Y=16, X=128, TID $68 (right half)
+   DB 0, 0, 0, 0
+
+; Third heart (further right): left and right halves
+sc_heart3_entity::
+   DB ENTITY_WITH_ALL, TAG_HEART, 0, 0
+   DB 16, 144, $66, %00000000                        ;; Y=16, X=136, TID $66 (left half)
+   DB 0, 0, 0, 0
+
+sc_heart3_right_entity::
+   DB ENTITY_WITH_ALL, TAG_HEART, 0, 0
+   DB 16, 152, $68, %00000000                        ;; Y=16, X=144, TID $68 (right half)
    DB 0, 0, 0, 0
 
 ; Preset X positions for ball spawns (OAM X coordinates)

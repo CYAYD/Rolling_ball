@@ -44,3 +44,4 @@ DEF CMP_SPRITE_UNUSED	RB 2
 
 DEF TAG_PLAYER        equ 1
 DEF TAG_BALL          equ 2
+DEF TAG_HEART         equ 3

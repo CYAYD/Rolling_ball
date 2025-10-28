@@ -148,8 +148,15 @@ sc_game_init::
    ; Create heart right half (second sprite, X + 8)
    ld hl, sc_heart_right_entity
    call create_one_entity
-   ; Create number '1' to the right of the heart
-   ld hl, sc_one_entity
+   ; Create second heart (left and right halves)
+   ld hl, sc_heart2_entity
+   call create_one_entity
+   ld hl, sc_heart2_right_entity
+   call create_one_entity
+   ; Create third heart (left and right halves)
+   ld hl, sc_heart3_entity
+   call create_one_entity
+   ld hl, sc_heart3_right_entity
    call create_one_entity
 
    call lcd_on

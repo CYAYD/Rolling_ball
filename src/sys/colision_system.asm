@@ -4,6 +4,8 @@ INCLUDE "utils/constants.inc"
 SECTION "Collision System WRAM", WRAM0
 coll_player_y: DS 1
 coll_player_x: DS 1
+heart_best_off: DS 1
+heart_best_x: DS 1
 
 SECTION "Collision System Code", ROM0
 
@@ -114,7 +116,22 @@ sys_collision_update::
     ld a, [hl]
     cp TID_BALL_BLACK
     jp nz, .despawn_only_ball
-    ; --- Black ball hit: trigger game over ---
+    ; --- Black ball hit: lose a heart, or game over if only one heart remains ---
+    ; Use hearts_left counter for robustness
+    ld hl, hearts_left
+    ld a, [hl]
+    cp 1
+    jp z, .trigger_game_over
+    dec a
+    ld [hl], a
+    ; remove one heart pair visually and despawn this black ball
+    push de                  ; preserve current ball entity offset in E
+    call remove_one_heart_pair
+    pop de
+    call despawn_entity_at_e
+    ret
+
+.trigger_game_over:
     call sc_game_over
     ret
 
@@ -137,4 +154,137 @@ sys_collision_update::
     ld e, a
     cp SIZEOF_ARRAY_CMP
     jp nz, .balls_loop
+    ret
+
+; (removed) count_heart_halves no longer used; rely on hearts_left counter
+
+; remove_one_heart_pair: remove the rightmost heart (two 8x16 sprites with TAG_HEART)
+; Clobbers: AF, BC, DE, HL
+remove_one_heart_pair::
+    ; init best_x = 0x00, best_off = 0xFF (not found)
+    ld hl, heart_best_x
+    xor a
+    ld [hl], a
+    ld hl, heart_best_off
+    ld a, $FF
+    ld [hl], a
+    ; scan all entities for TAG_HEART and track max X
+    ld e, 0
+.scan_hearts:
+    ld h, CMP_INFO_H
+    ld l, e
+    ld a, [hl]
+    and VALID_ENTITY
+    cp VALID_ENTITY
+    jr nz, .next_scan
+    inc l                 ; info+1 = TAG
+    ld a, [hl]
+    cp TAG_HEART
+    jr nz, .next_scan
+    ; read X
+    ld h, CMP_SPRITE_H
+    ld l, e
+    inc l
+    ld a, [hl]
+    ld hl, heart_best_x
+    cp [hl]
+    jr c, .next_scan
+    ; a >= best_x, update
+    ld [hl], a
+    ld hl, heart_best_off
+    ld [hl], e
+.next_scan:
+    ld a, e
+    add SIZEOF_CMP
+    ld e, a
+    cp SIZEOF_ARRAY_CMP
+    jr nz, .scan_hearts
+    ; if none found, return
+    ld hl, heart_best_off
+    ld a, [hl]
+    cp $FF
+    ret z
+    ; plan removal: pick selected heart entity and determine its counterpart before despawning
+    ld e, a               ; E = offset of chosen heart entity
+    ; read Y,X,TID first
+    ld h, CMP_SPRITE_H
+    ld l, e
+    ld b, [hl]           ; B = Y
+    inc l
+    ld c, [hl]           ; C = X
+    inc l
+    ld a, [hl]           ; A = TID
+    ; compute neighbor X in D
+    ld d, c
+    cp TID_HEART_R
+    jr nz, .assume_left
+    ; was right half, neighbor is left at X-8
+    ld a, d
+    sub 8
+    ld d, a
+    jr .have_neighbor
+.assume_left:
+    ; assume left half, neighbor is right at X+8
+    ld a, d
+    add 8
+    ld d, a
+.have_neighbor:
+    ; despawn selected entity now
+    push de              ; save neighbor X in D and selection offset in E via stack
+    push bc              ; save B=C=Y,X (for matching)
+    ld e, heart_best_off ; reload selection offset? not needed; E already points to selected
+    ; but ensure E still equals selected offset; restore E from heart_best_off
+    ld hl, heart_best_off
+    ld e, [hl]
+    call despawn_entity_at_e
+    pop bc               ; restore B=Y, C=X of selected
+    pop de               ; restore D=neighbor X
+    ; scan again to find TAG_HEART with same Y, neighbor X
+    ld e, 0
+.scan_pair:
+    ld h, CMP_INFO_H
+    ld l, e
+    ld a, [hl]
+    and VALID_ENTITY
+    cp VALID_ENTITY
+    jr nz, .next_pair
+    inc l
+    ld a, [hl]
+    cp TAG_HEART
+    jr nz, .next_pair
+    ; compare Y and X
+    ld h, CMP_SPRITE_H
+    ld l, e
+    ld a, [hl]
+    cp b
+    jr nz, .next_pair
+    inc l
+    ld a, [hl]
+    cp d
+    jr nz, .next_pair
+    ; found counterpart
+    call despawn_entity_at_e
+    jr .done_pair
+.next_pair:
+    ld a, e
+    add SIZEOF_CMP
+    ld e, a
+    cp SIZEOF_ARRAY_CMP
+    jr nz, .scan_pair
+.done_pair:
+    ret
+
+; despawn_entity_at_e: clear USED|ALIVE, dec alive_entities, zero sprite component at offset E
+despawn_entity_at_e::
+    ld h, CMP_INFO_H
+    ld l, e
+    res CMP_BIT_USED, [hl]
+    res CMP_BIT_ALIVE, [hl]
+    ld hl, alive_entities
+    dec [hl]
+    ld h, CMP_SPRITE_H
+    ld l, e
+    xor a
+    ld b, SIZEOF_CMP
+    call memset_256
     ret

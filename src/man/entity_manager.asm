@@ -20,6 +20,8 @@ DS ALIGN[8]
 alive_entities: DS 1
 ; game over flag: 0=running, 1=over
 game_over_flag: DS 1
+; hearts remaining (3 to start)
+hearts_left: DS 1
 
 ; temporary buffer to build an entity in WRAM before allocating
 last_temp_entity: DS 1
@@ -102,6 +104,10 @@ man_entity_init::
 	ld [hl], a
 	; init game over flag = 0
 	ld hl, game_over_flag
+	ld [hl], a
+	; init hearts = 3
+	ld hl, hearts_left
+	ld a, 3
 	ld [hl], a
   
   .zero_cmps_info
