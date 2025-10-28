@@ -60,6 +60,17 @@ tile_R::
    DB $FE,$FE,$81,$81,$81,$81,$FE,$FE
    DB $A0,$A0,$90,$90,$88,$88,$84,$84
 
+; Additional glyphs for restart prompt
+tile_P::
+   DB $FE,$FE,$81,$81,$81,$81,$FE,$FE
+   DB $80,$80,$80,$80,$80,$80,$80,$80
+tile_S::
+   DB $7E,$7E,$80,$80,$80,$80,$7C,$7C
+   DB $02,$02,$02,$02,$02,$02,$FC,$FC
+tile_T::
+   DB $FF,$FF,$18,$18,$18,$18,$18,$18
+   DB $18,$18,$18,$18,$18,$18,$18,$18
+
 sc_game_entity_1::
    DB  ENTITY_WITH_ALL,  TAG_PLAYER,   0, 0                 ;; CMP_INFO
    DB 32, 16, $20, %00000000                       ;; CMP_SPRITE

@@ -214,8 +214,14 @@ draw_game_over::
    MEMCPY_256 tile_O, VRAM_TILE_START + ($54 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
    MEMCPY_256 tile_V, VRAM_TILE_START + ($55 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
    MEMCPY_256 tile_R, VRAM_TILE_START + ($56 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
-   ; Write "GAME OVER" centered-ish on row 9, starting col 6
-   ld de, $9800 + (9*32) + 6
+   ; Also copy a guaranteed blank tile at $57 to use as space (avoid whatever tile 0 is)
+   MEMCPY_256 blank_tile, VRAM_TILE_START + ($57 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
+   ; Copy additional letters for prompt
+    MEMCPY_256 tile_P, VRAM_TILE_START + ($58 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
+    MEMCPY_256 tile_S, VRAM_TILE_START + ($59 * VRAM_TILE_SIZE), VRAM_TILE_SIZE
+    MEMCPY_256 tile_T, VRAM_TILE_START + ($5A * VRAM_TILE_SIZE), VRAM_TILE_SIZE
+   ; Write "GAME OVER" centered-ish on row 7, starting col 6 (moved up)
+   ld de, $9800 + (7*32) + 6
    ld a, $50 ; G
    ld [de], a
    inc de
@@ -228,7 +234,7 @@ draw_game_over::
    ld a, $53 ; E
    ld [de], a
    inc de
-   xor a      ; space
+   ld a, $57  ; space = blank tile we control (not tile 0)
    ld [de], a
    inc de
    ld a, $54 ; O
@@ -242,4 +248,73 @@ draw_game_over::
    inc de
    ld a, $56 ; R
    ld [de], a
+   ; continue to write restart prompt
+   ; Write restart prompt on two lines below: "PRESS START" and "TO RESTART"
+   ; Line 1: row 9, start col 4 -> "PRESS START" (one blank row between title and prompt)
+   ld de, $9800 + (9*32) + 4
+   ld a, $58 ; P
+   ld [de], a
+   inc de
+   ld a, $56 ; R
+   ld [de], a
+   inc de
+   ld a, $53 ; E
+   ld [de], a
+   inc de
+   ld a, $59 ; S
+   ld [de], a
+   inc de
+   ld a, $59 ; S
+   ld [de], a
+   inc de
+   ld a, $57 ; space
+   ld [de], a
+   inc de
+   ld a, $59 ; S
+   ld [de], a
+   inc de
+   ld a, $5A ; T
+   ld [de], a
+   inc de
+   ld a, $51 ; A
+   ld [de], a
+   inc de
+   ld a, $56 ; R
+   ld [de], a
+   inc de
+   ld a, $5A ; T
+   ld [de], a
+   inc de
+   ; Line 2: row 10, start col 5 -> "TO RESTART"
+   ld de, $9800 + (10*32) + 5
+   ld a, $5A ; T
+   ld [de], a
+   inc de
+   ld a, $54 ; O
+   ld [de], a
+   inc de
+   ld a, $57 ; space
+   ld [de], a
+   inc de
+   ld a, $56 ; R
+   ld [de], a
+   inc de
+   ld a, $53 ; E
+   ld [de], a
+   inc de
+   ld a, $59 ; S
+   ld [de], a
+   inc de
+   ld a, $5A ; T
+   ld [de], a
+   inc de
+   ld a, $51 ; A
+   ld [de], a
+   inc de
+   ld a, $56 ; R
+   ld [de], a
+   inc de
+   ld a, $5A ; T
+   ld [de], a
+   inc de
    ret
