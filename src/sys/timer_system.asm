@@ -17,6 +17,8 @@ timer_init::
     ld [timer_frames], a
     ld a, 60
     ld [timer_seconds], a
+    ; reset physics speed to normal when timer starts
+    call sys_physics_set_normal
     call timer_draw
     ret
 
@@ -43,6 +45,10 @@ timer_update::
     jr z, .draw
     dec a
     ld [timer_seconds], a
+    ; speed up falls when reaching 30 seconds
+    cp 30
+    jr nz, .draw
+    call sys_physics_set_fast
 .draw:
     call timer_draw
     ; If timer reached 0, trigger game over once

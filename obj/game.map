@@ -1,6 +1,6 @@
 SUMMARY:
-	ROM0: 4703 bytes used / 11681 free
-	WRAM0: 807 bytes used / 3289 free
+	ROM0: 4734 bytes used / 11650 free
+	WRAM0: 808 bytes used / 3288 free
 
 ROM0 bank #0:
 	SECTION: $0000-$00c7 ($00c8 bytes) ["Score Code"]
@@ -164,48 +164,50 @@ ROM0 bank #0:
 	         $111e = choose_fair_black_index.mask_ok2
 	         $111f = choose_fair_black_index.found
 	         $112a = black_maybe_paint_last_entity_black
-	SECTION: $1140-$11ac ($006d bytes) ["Timer Code"]
-	         $1140 = timer_init
-	         $114d = timer_update
-	         $1168 = timer_update.draw
-	         $1174 = timer_store_only
-	         $1176 = timer_split10
-	         $117b = timer_split10.split_loop
-	         $1184 = timer_split10.done
-	         $1185 = timer_draw
-	         $118f = timer_draw.wait_vblank
-	         $1196 = timer_draw.no_wait
-	         $11a1 = timer_draw.ones_reduce
-	         $11a9 = timer_draw.ones_ready
-	SECTION: $11ad-$1218 ($006c bytes) ["Physics System Code"]
-	         $11ad = sys_physics_update_one_entity
-	         $11c2 = sys_physics_update_one_entity.no_delay
-	         $11d2 = sys_physics_update_one_entity.store_tick_and_ret_b
-	         $11d4 = sys_physics_update_one_entity.after_tick_b
-	         $11e1 = sys_physics_update_one_entity.grav_store
-	         $11e3 = sys_physics_update_one_entity.no_gravity
-	         $11e3 = sys_physics_update_one_entity.hl_phy_de_spr
-	         $11e8 = sys_physics_update_one_entity.y_plus_vy
-	         $11ed = sys_physics_update_one_entity.x_plus_vx
-	         $120a = sys_physics_update_one_entity.no_despawn
-	         $120b = sys_physics_update
-	SECTION: $1219-$127f ($0067 bytes) ["Utils"]
-	         $1219 = lcd_off
-	         $1224 = lcd_on
-	         $122a = wait_vblank_start
-	         $122f = wait_vblank_start.loop
-	         $1233 = memcpy_256
-	         $123a = memset_256
-	         $123f = memcpy_bc
-	         $1248 = simulated_call_hl
-	         $1249 = rand8
-	         $1254 = rand8.no_xor
-	         $1256 = mul8_high
-	         $125c = mul8_high.mul_loop
-	         $1269 = mul8_high.no_add
-	         $1272 = rand_range
-	EMPTY: $1280-$3fff ($2d80 bytes)
-	TOTAL EMPTY: $2da1 bytes
+	SECTION: $1140-$11c0 ($0081 bytes) ["Physics System Code"]
+	         $1140 = sys_physics_update_one_entity
+	         $1155 = sys_physics_update_one_entity.no_delay
+	         $116b = sys_physics_update_one_entity.store_tick_and_ret_b
+	         $116e = sys_physics_update_one_entity.after_tick_b
+	         $117b = sys_physics_update_one_entity.grav_store
+	         $117d = sys_physics_update_one_entity.no_gravity
+	         $117d = sys_physics_update_one_entity.hl_phy_de_spr
+	         $1182 = sys_physics_update_one_entity.y_plus_vy
+	         $1187 = sys_physics_update_one_entity.x_plus_vx
+	         $11a4 = sys_physics_update_one_entity.no_despawn
+	         $11a5 = sys_physics_update
+	         $11b3 = sys_physics_set_normal
+	         $11ba = sys_physics_set_fast
+	SECTION: $11c1-$1237 ($0077 bytes) ["Timer Code"]
+	         $11c1 = timer_init
+	         $11d1 = timer_update
+	         $11f3 = timer_update.draw
+	         $11ff = timer_store_only
+	         $1201 = timer_split10
+	         $1206 = timer_split10.split_loop
+	         $120f = timer_split10.done
+	         $1210 = timer_draw
+	         $121a = timer_draw.wait_vblank
+	         $1221 = timer_draw.no_wait
+	         $122c = timer_draw.ones_reduce
+	         $1234 = timer_draw.ones_ready
+	SECTION: $1238-$129e ($0067 bytes) ["Utils"]
+	         $1238 = lcd_off
+	         $1243 = lcd_on
+	         $1249 = wait_vblank_start
+	         $124e = wait_vblank_start.loop
+	         $1252 = memcpy_256
+	         $1259 = memset_256
+	         $125e = memcpy_bc
+	         $1267 = simulated_call_hl
+	         $1268 = rand8
+	         $1273 = rand8.no_xor
+	         $1275 = mul8_high
+	         $127b = mul8_high.mul_loop
+	         $1288 = mul8_high.no_add
+	         $1291 = rand_range
+	EMPTY: $129f-$3fff ($2d61 bytes)
+	TOTAL EMPTY: $2d82 bytes
 
 WRAM0 bank #0:
 	SECTION: $c000-$c31b ($031c bytes) ["Entity Manager Data"]
@@ -244,5 +246,7 @@ WRAM0 bank #0:
 	SECTION: $c325-$c326 ($0002 bytes) ["Timer State"]
 	         $c325 = timer_frames
 	         $c326 = timer_seconds
-	EMPTY: $c327-$cfff ($0cd9 bytes)
-	TOTAL EMPTY: $0cd9 bytes
+	SECTION: $c327-$c327 ($0001 byte) ["Physics State"]
+	         $c327 = ball_fall_div
+	EMPTY: $c328-$cfff ($0cd8 bytes)
+	TOTAL EMPTY: $0cd8 bytes

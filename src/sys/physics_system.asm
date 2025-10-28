@@ -1,5 +1,10 @@
 INCLUDE "utils/constants.inc"
 INCLUDE "man/entity_manager.inc"
+SECTION "Physics State", WRAM0
+
+; Current fall rate divider for balls (frames between gravity ticks)
+; Initialized to BALL_FALL_DIV; can be set to 1 to speed up
+ball_fall_div:: DS 1
 SECTION "Physics System Code", ROM0
 
 ;;sys_render_init::
@@ -31,13 +36,19 @@ sys_physics_update_one_entity::
 	inc hl
 	inc hl
 	ld a, [hl]
-	inc a
-	cp BALL_FALL_DIV
+	inc a                ; a = tick+1
+	ld b, a              ; save new tick in b
+	push hl              ; save pointer to tick
+	ld hl, ball_fall_div
+	ld a, b              ; a = tick
+	cp [hl]              ; compare tick with current divider
+	pop hl
 	jr c, .store_tick_and_ret_b
-	xor a
+	xor a                ; reset tick
 	ld [hl], a
 	jr .after_tick_b
 .store_tick_and_ret_b:
+	ld a, b
 	ld [hl], a
 	ret
 .after_tick_b:
@@ -107,3 +118,16 @@ sys_physics_update::
 	call man_entity_for_each
 
 ret
+
+; Initialize physics configurable parameters
+sys_physics_set_normal::
+	ld hl, ball_fall_div
+	ld a, BALL_FALL_DIV
+	ld [hl], a
+	ret
+
+sys_physics_set_fast::
+	ld hl, ball_fall_div
+	ld a, 1
+	ld [hl], a
+	ret
