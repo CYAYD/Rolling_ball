@@ -1,6 +1,6 @@
 SUMMARY:
-	ROM0: 5065 bytes used / 11319 free
-	WRAM0: 811 bytes used / 3285 free
+	ROM0: 4843 bytes used / 11541 free
+	WRAM0: 809 bytes used / 3287 free
 
 ROM0 bank #0:
 	SECTION: $0000-$00f3 ($00f4 bytes) ["Score Code"]
@@ -68,166 +68,160 @@ ROM0 bank #0:
 	         $0a3c = sc_heart3_entity
 	         $0a48 = sc_heart3_right_entity
 	         $0a54 = ball_spawn_positions_x
-	SECTION: $0a5e-$0c53 ($01f6 bytes) ["Input System"]
-	         $0a5e = process_spawns
-	         $0aac = process_spawns.have_quota
-	         $0ab2 = process_spawns.burst_loop
-	         $0ac2 = process_spawns.st_no_cap
-	         $0acb = process_spawns.no_burst
-	         $0acc = spawn_ball_random
-	         $0ae9 = spawn_ball_random.mul_loop
-	         $0af1 = spawn_ball_random.mod_loop
-	         $0af9 = spawn_ball_random.have_idx
-	         $0b22 = spawn_special_ball_random
-	         $0b5d = read_input_and_apply
-	         $0b75 = read_input_and_apply.end_input
-	         $0b76 = read_input_and_apply.normal_input
-	         $0b90 = read_input_and_apply.move_no_up
-	         $0b97 = read_input_and_apply.move_no_down
-	         $0ba3 = read_input_and_apply.move_no_right
-	         $0baa = read_input_and_apply.move_no_left
-	         $0bac = convert_random_normal_ball_to_special
-	         $0bb0 = convert_random_normal_ball_to_special.crn_scan
-	         $0bcb = convert_random_normal_ball_to_special.crn_next
-	         $0be0 = convert_random_normal_ball_to_special.crn_scan2
-	         $0c05 = convert_random_normal_ball_to_special.crn2_dec
-	         $0c06 = convert_random_normal_ball_to_special.crn2_next
-	         $0c0f = count_balls
-	         $0c13 = count_balls.cb_loop
-	         $0c27 = count_balls.cb_next
-	         $0c31 = normalize_all_balls_normal
-	         $0c33 = normalize_all_balls_normal.norm_loop
-	         $0c4b = normalize_all_balls_normal.norm_next
-	SECTION: $0c54-$0e41 ($01ee bytes) ["Scene Game"]
-	         $0c54 = create_one_entity
-	         $0c55 = create_one_entity.reserve_space_for_entity
-	         $0c58 = create_one_entity.copy_info_cmp
-	         $0c62 = create_one_entity.copy_sprite_cmp
-	         $0c70 = create_one_entity.copy_physics_cmp
-	         $0c7d = sc_game_init
-	         $0c80 = sc_game_init.init_managers_and_systems
-	         $0c8f = sc_game_init.init_palettes_and_tiles
-	         $0cb2 = sc_game_init.copy_loop
-	         $0de8 = sc_game_init.enable_objects
-	         $0df6 = sc_game_init.creat_entities
-	         $0e2a = sc_game_run
-	         $0e2a = sc_game_run.loop
-	SECTION: $0e42-$0fc5 ($0184 bytes) ["Collision System Code"]
-	         $0e42 = sys_collision_update
-	         $0e4e = sys_collision_update.find_player_loop
-	         $0e74 = sys_collision_update.next_find_player
-	         $0e7c = sys_collision_update.have_player
-	         $0e85 = sys_collision_update.balls_loop
-	         $0ef6 = sys_collision_update.check_special
-	         $0f01 = sys_collision_update.trigger_game_over
-	         $0f05 = sys_collision_update.despawn_only_ball
-	         $0f1c = sys_collision_update.next_ball
-	         $0f26 = remove_one_heart_pair
-	         $0f33 = remove_one_heart_pair.scan_hearts
-	         $0f53 = remove_one_heart_pair.next_scan
-	         $0f76 = remove_one_heart_pair.assume_left
-	         $0f7a = remove_one_heart_pair.have_neighbor
-	         $0f87 = remove_one_heart_pair.scan_pair
-	         $0fa8 = remove_one_heart_pair.next_pair
-	         $0fb0 = remove_one_heart_pair.done_pair
-	         $0fb1 = despawn_entity_at_e
-	SECTION: $0fc6-$10f2 ($012d bytes) ["Scene Game Over"]
-	         $0fc6 = sc_game_over
-	         $0ff9 = draw_game_over
-	SECTION: $10f3-$11b7 ($00c5 bytes) ["Black Select System Code"]
-	         $10f3 = black_select_begin
-	         $10fd = black_maybe_paint_temp_entity_black
-	         $110d = black_maybe_paint_temp_entity_black.no_black
-	         $110e = choose_fair_black_index
-	         $1118 = choose_fair_black_index.mod5
-	         $1120 = choose_fair_black_index.idx_ready
-	         $1123 = choose_fair_black_index.try_loop
-	         $112e = choose_fair_black_index.shift_loop
-	         $1135 = choose_fair_black_index.mask_is_one
-	         $1137 = choose_fair_black_index.mask_ready
-	         $113c = choose_fair_black_index.next_idx
-	         $1143 = choose_fair_black_index.store_idx
-	         $1151 = choose_fair_black_index.mod_b
-	         $1157 = choose_fair_black_index.have_d
-	         $115f = choose_fair_black_index.shift2
-	         $1166 = choose_fair_black_index.mask_one2
-	         $1168 = choose_fair_black_index.mask_ok2
-	         $1169 = choose_fair_black_index.found
-	         $1174 = black_maybe_paint_last_entity_black
-	         $118a = special_select_prepare
-	         $1194 = special_select_prepare.mod_b
-	         $119a = special_select_prepare.store
-	         $119f = special_maybe_paint_last_entity_special
-	SECTION: $11b8-$125e ($00a7 bytes) ["Entity Manager Code"]
-	         $11b8 = man_entity_init.zero_alive_entities
-	         $11b8 = man_entity_init
-	         $11c9 = man_entity_init.seed_ok
-	         $120c = man_entity_init.zero_cmps_info
-	         $1215 = man_entity_init.zero_cmps_sprite
-	         $121e = man_entity_alloc.one_more_alice_entity
-	         $121e = man_entity_alloc
-	         $1222 = man_entity_alloc.find_first_free_slot
-	         $1228 = man_entity_alloc.loop
-	         $122d = man_entity_alloc.found_free_slot
-	         $1237 = man_entity_get_components
-	         $123d = man_entity_for_each
-	         $1240 = man_entity_for_each.check_if_zero_entities
-	         $1243 = man_entity_for_each.process_alive_entities
-	         $1247 = man_entity_for_each.loop
-	         $1247 = man_entity_for_each.check_if_valid
-	         $124e = man_entity_for_each.process
-	         $1257 = man_entity_for_each.check_end
-	         $1259 = man_entity_for_each.next
-	SECTION: $125f-$12df ($0081 bytes) ["Physics System Code"]
-	         $125f = sys_physics_update_one_entity
-	         $1274 = sys_physics_update_one_entity.no_delay
-	         $128a = sys_physics_update_one_entity.store_tick_and_ret_b
-	         $128d = sys_physics_update_one_entity.after_tick_b
-	         $129a = sys_physics_update_one_entity.grav_store
-	         $129c = sys_physics_update_one_entity.no_gravity
-	         $129c = sys_physics_update_one_entity.hl_phy_de_spr
-	         $12a1 = sys_physics_update_one_entity.y_plus_vy
-	         $12a6 = sys_physics_update_one_entity.x_plus_vx
-	         $12c3 = sys_physics_update_one_entity.no_despawn
-	         $12c4 = sys_physics_update
-	         $12d2 = sys_physics_set_normal
-	         $12d9 = sys_physics_set_fast
-	SECTION: $12e0-$1356 ($0077 bytes) ["Timer Code"]
-	         $12e0 = timer_init
-	         $12f0 = timer_update
-	         $1312 = timer_update.draw
-	         $131e = timer_store_only
-	         $1320 = timer_split10
-	         $1325 = timer_split10.split_loop
-	         $132e = timer_split10.done
-	         $132f = timer_draw
-	         $1339 = timer_draw.wait_vblank
-	         $1340 = timer_draw.no_wait
-	         $134b = timer_draw.ones_reduce
-	         $1353 = timer_draw.ones_ready
-	SECTION: $1357-$13bd ($0067 bytes) ["Utils"]
-	         $1357 = lcd_off
-	         $1362 = lcd_on
-	         $1368 = wait_vblank_start
-	         $136d = wait_vblank_start.loop
-	         $1371 = memcpy_256
-	         $1378 = memset_256
-	         $137d = memcpy_bc
-	         $1386 = simulated_call_hl
-	         $1387 = rand8
-	         $1392 = rand8.no_xor
-	         $1394 = mul8_high
-	         $139a = mul8_high.mul_loop
-	         $13a7 = mul8_high.no_add
-	         $13b0 = rand_range
-	SECTION: $13be-$13d4 ($0017 bytes) ["Render System Code"]
-	         $13be = sys_render_init
-	         $13c8 = sys_render_update
-	EMPTY: $13d5-$3fff ($2c2b bytes)
-	TOTAL EMPTY: $2c37 bytes
+	SECTION: $0a5e-$0c4b ($01ee bytes) ["Scene Game"]
+	         $0a5e = create_one_entity
+	         $0a5f = create_one_entity.reserve_space_for_entity
+	         $0a62 = create_one_entity.copy_info_cmp
+	         $0a6c = create_one_entity.copy_sprite_cmp
+	         $0a7a = create_one_entity.copy_physics_cmp
+	         $0a87 = sc_game_init
+	         $0a8a = sc_game_init.init_managers_and_systems
+	         $0a99 = sc_game_init.init_palettes_and_tiles
+	         $0abc = sc_game_init.copy_loop
+	         $0bf2 = sc_game_init.enable_objects
+	         $0c00 = sc_game_init.creat_entities
+	         $0c34 = sc_game_run
+	         $0c34 = sc_game_run.loop
+	SECTION: $0c4c-$0da2 ($0157 bytes) ["Collision System Code"]
+	         $0c4c = sys_collision_update
+	         $0c70 = sys_collision_update.have_player
+	         $0c79 = sys_collision_update.balls_loop
+	         $0ce4 = sys_collision_update.check_special
+	         $0cef = sys_collision_update.trigger_game_over
+	         $0cf3 = sys_collision_update.despawn_only_ball
+	         $0cf9 = sys_collision_update.next_ball
+	         $0d03 = remove_one_heart_pair
+	         $0d10 = remove_one_heart_pair.scan_hearts
+	         $0d30 = remove_one_heart_pair.next_scan
+	         $0d53 = remove_one_heart_pair.assume_left
+	         $0d57 = remove_one_heart_pair.have_neighbor
+	         $0d64 = remove_one_heart_pair.scan_pair
+	         $0d85 = remove_one_heart_pair.next_pair
+	         $0d8d = remove_one_heart_pair.done_pair
+	         $0d8e = despawn_entity_at_e
+	SECTION: $0da3-$0ecf ($012d bytes) ["Scene Game Over"]
+	         $0da3 = sc_game_over
+	         $0dd6 = draw_game_over
+	SECTION: $0ed0-$0fe4 ($0115 bytes) ["Input System"]
+	         $0ed0 = process_spawns
+	         $0f20 = process_spawns.have_quota
+	         $0f26 = process_spawns.burst_loop
+	         $0f36 = process_spawns.st_no_cap
+	         $0f3f = process_spawns.no_burst
+	         $0f40 = spawn_ball_random
+	         $0f5d = spawn_ball_random.mul_loop
+	         $0f65 = spawn_ball_random.mod_loop
+	         $0f6d = spawn_ball_random.have_idx
+	         $0f96 = read_input_and_apply
+	         $0fae = read_input_and_apply.end_input
+	         $0faf = read_input_and_apply.normal_input
+	         $0fc9 = read_input_and_apply.move_no_up
+	         $0fd0 = read_input_and_apply.move_no_down
+	         $0fdc = read_input_and_apply.move_no_right
+	         $0fe3 = read_input_and_apply.move_no_left
+	SECTION: $0fe5-$10ec ($0108 bytes) ["Entity Manager Code"]
+	         $0fe5 = man_entity_init.zero_alive_entities
+	         $0fe5 = man_entity_init
+	         $0ff6 = man_entity_init.seed_ok
+	         $1031 = man_entity_init.zero_cmps_info
+	         $103a = man_entity_init.zero_cmps_sprite
+	         $1043 = man_entity_alloc.one_more_alice_entity
+	         $1043 = man_entity_alloc
+	         $1047 = man_entity_alloc.find_first_free_slot
+	         $104d = man_entity_alloc.loop
+	         $1052 = man_entity_alloc.found_free_slot
+	         $105c = man_entity_get_components
+	         $1062 = man_entity_for_each
+	         $1065 = man_entity_for_each.check_if_zero_entities
+	         $1068 = man_entity_for_each.process_alive_entities
+	         $106c = man_entity_for_each.loop
+	         $106c = man_entity_for_each.check_if_valid
+	         $1073 = man_entity_for_each.process
+	         $107c = man_entity_for_each.check_end
+	         $107e = man_entity_for_each.next
+	         $1084 = man_find_first_by_tag
+	         $1087 = man_find_first_by_tag.mff_loop
+	         $1096 = man_find_first_by_tag.mff_next
+	         $10a0 = man_find_first_by_tag.mff_found
+	         $10a3 = man_count_by_tag
+	         $10a8 = man_count_by_tag.mcbt_loop
+	         $10b8 = man_count_by_tag.mcbt_next
+	         $10c2 = man_get_sprite_yx_at_e
+	         $10c9 = man_get_sprite_tid_at_e
+	         $10d0 = man_set_last_entity_tid
+	         $10dd = man_set_last_entity_tid_attr
+	SECTION: $10ed-$1191 ($00a5 bytes) ["Black Select System Code"]
+	         $10ed = black_select_begin
+	         $10f7 = choose_fair_black_index
+	         $1101 = choose_fair_black_index.mod5
+	         $1109 = choose_fair_black_index.idx_ready
+	         $110c = choose_fair_black_index.try_loop
+	         $1117 = choose_fair_black_index.shift_loop
+	         $111e = choose_fair_black_index.mask_is_one
+	         $1120 = choose_fair_black_index.mask_ready
+	         $1125 = choose_fair_black_index.next_idx
+	         $112c = choose_fair_black_index.store_idx
+	         $113a = choose_fair_black_index.mod_b
+	         $1140 = choose_fair_black_index.have_d
+	         $1148 = choose_fair_black_index.shift2
+	         $114f = choose_fair_black_index.mask_one2
+	         $1151 = choose_fair_black_index.mask_ok2
+	         $1152 = choose_fair_black_index.found
+	         $115d = black_maybe_paint_last_entity_black
+	         $116c = special_select_prepare
+	         $1176 = special_select_prepare.mod_b
+	         $117c = special_select_prepare.store
+	         $1181 = special_maybe_paint_last_entity_special
+	SECTION: $1192-$1208 ($0077 bytes) ["Timer Code"]
+	         $1192 = timer_init
+	         $11a2 = timer_update
+	         $11c4 = timer_update.draw
+	         $11d0 = timer_store_only
+	         $11d2 = timer_split10
+	         $11d7 = timer_split10.split_loop
+	         $11e0 = timer_split10.done
+	         $11e1 = timer_draw
+	         $11eb = timer_draw.wait_vblank
+	         $11f2 = timer_draw.no_wait
+	         $11fd = timer_draw.ones_reduce
+	         $1205 = timer_draw.ones_ready
+	SECTION: $1209-$1278 ($0070 bytes) ["Physics System Code"]
+	         $1209 = sys_physics_update_one_entity
+	         $121e = sys_physics_update_one_entity.no_delay
+	         $1234 = sys_physics_update_one_entity.store_tick_and_ret_b
+	         $1237 = sys_physics_update_one_entity.after_tick_b
+	         $1244 = sys_physics_update_one_entity.grav_store
+	         $1246 = sys_physics_update_one_entity.no_gravity
+	         $1246 = sys_physics_update_one_entity.hl_phy_de_spr
+	         $124b = sys_physics_update_one_entity.y_plus_vy
+	         $1250 = sys_physics_update_one_entity.x_plus_vx
+	         $125c = sys_physics_update_one_entity.no_despawn
+	         $125d = sys_physics_update
+	         $126b = sys_physics_set_normal
+	         $1272 = sys_physics_set_fast
+	SECTION: $1279-$12df ($0067 bytes) ["Utils"]
+	         $1279 = lcd_off
+	         $1284 = lcd_on
+	         $128a = wait_vblank_start
+	         $128f = wait_vblank_start.loop
+	         $1293 = memcpy_256
+	         $129a = memset_256
+	         $129f = memcpy_bc
+	         $12a8 = simulated_call_hl
+	         $12a9 = rand8
+	         $12b4 = rand8.no_xor
+	         $12b6 = mul8_high
+	         $12bc = mul8_high.mul_loop
+	         $12c9 = mul8_high.no_add
+	         $12d2 = rand_range
+	SECTION: $12e0-$12f6 ($0017 bytes) ["Render System Code"]
+	         $12e0 = sys_render_init
+	         $12ea = sys_render_update
+	EMPTY: $12f7-$3fff ($2d09 bytes)
+	TOTAL EMPTY: $2d15 bytes
 
 WRAM0 bank #0:
-	SECTION: $c000-$c31e ($031f bytes) ["Entity Manager Data"]
+	SECTION: $c000-$c31c ($031d bytes) ["Entity Manager Data"]
 	         $c000 = components_info
 	         $c000 = components
 	         $c100 = components_sprite
@@ -241,32 +235,30 @@ WRAM0 bank #0:
 	         $c311 = ball_rand
 	         $c312 = ball_burst_frame_count
 	         $c313 = ball_burst_seconds
-	         $c314 = special_frame_count
-	         $c315 = special_seconds
-	         $c316 = ball_last_spawn_x
-	         $c317 = ball_last_spawn_index
-	         $c318 = rng_tick
-	         $c319 = ball_burst_stagger
-	         $c31a = ball_burst_base_idx
-	         $c31b = ball_burst_spawn_idx
-	         $c31c = ball_burst_black_idx
-	         $c31d = ball_burst_special_idx
-	         $c31e = ball_black_used_mask
-	SECTION: $c31f-$c323 ($0005 bytes) ["Score State"]
-	         $c31f = score_thousands
-	         $c320 = score_hundreds
-	         $c321 = score_tens
-	         $c322 = score_ones
-	         $c323 = score_dirty
-	SECTION: $c324-$c327 ($0004 bytes) ["Collision System WRAM"]
-	         $c324 = coll_player_y
-	         $c325 = coll_player_x
-	         $c326 = heart_best_off
-	         $c327 = heart_best_x
-	SECTION: $c328-$c329 ($0002 bytes) ["Timer State"]
-	         $c328 = timer_frames
-	         $c329 = timer_seconds
-	SECTION: $c32a-$c32a ($0001 byte) ["Physics State"]
-	         $c32a = ball_fall_div
-	EMPTY: $c32b-$cfff ($0cd5 bytes)
-	TOTAL EMPTY: $0cd5 bytes
+	         $c314 = ball_last_spawn_x
+	         $c315 = ball_last_spawn_index
+	         $c316 = rng_tick
+	         $c317 = ball_burst_stagger
+	         $c318 = ball_burst_base_idx
+	         $c319 = ball_burst_spawn_idx
+	         $c31a = ball_burst_black_idx
+	         $c31b = ball_burst_special_idx
+	         $c31c = ball_black_used_mask
+	SECTION: $c31d-$c321 ($0005 bytes) ["Score State"]
+	         $c31d = score_thousands
+	         $c31e = score_hundreds
+	         $c31f = score_tens
+	         $c320 = score_ones
+	         $c321 = score_dirty
+	SECTION: $c322-$c325 ($0004 bytes) ["Collision System WRAM"]
+	         $c322 = coll_player_y
+	         $c323 = coll_player_x
+	         $c324 = heart_best_off
+	         $c325 = heart_best_x
+	SECTION: $c326-$c327 ($0002 bytes) ["Timer State"]
+	         $c326 = timer_frames
+	         $c327 = timer_seconds
+	SECTION: $c328-$c328 ($0001 byte) ["Physics State"]
+	         $c328 = ball_fall_div
+	EMPTY: $c329-$cfff ($0cd7 bytes)
+	TOTAL EMPTY: $0cd7 bytes

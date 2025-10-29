@@ -18,21 +18,12 @@ sys_collision_update::
     ld hl, coll_player_x
     ld [hl], a
 
-    ; Find player entity and cache its Y,X
-    ld e, 0
-.find_player_loop:
-    ld h, CMP_INFO_H
-    ld l, e
-    ld a, [hl]
-    and VALID_ENTITY
-    cp VALID_ENTITY
-    jr nz, .next_find_player
-    ld h, CMP_INFO_H
-    ld l, e
-    inc l
-    ld a, [hl]
-    cp TAG_PLAYER
-    jr nz, .next_find_player
+    ; Find player entity and cache its Y,X (use shared finder)
+    ld a, TAG_PLAYER
+    call man_find_first_by_tag
+    cp 0
+    jr z, .have_player
+    ; E holds player offset
     ; Cache sprite Y and X
     ld h, CMP_SPRITE_H
     ld l, e
@@ -45,13 +36,6 @@ sys_collision_update::
     ld a, [hl]
     ld hl, coll_player_x
     ld [hl], a
-    jr .have_player
-.next_find_player:
-    ld a, e
-    add SIZEOF_CMP
-    ld e, a
-    cp SIZEOF_ARRAY_CMP
-    jr nz, .find_player_loop
 .have_player:
     ; If no player found, nothing to do
     ld hl, coll_player_y
@@ -74,12 +58,8 @@ sys_collision_update::
     ld a, [hl]
     cp TAG_BALL
     jp nz, .next_ball
-    ; Read ball Y,X
-    ld h, CMP_SPRITE_H
-    ld l, e
-    ld b, [hl]           ; B = ball_y
-    inc l
-    ld c, [hl]           ; C = ball_x
+    ; Read ball Y,X via helper
+    call man_get_sprite_yx_at_e
     ; Vertical overlap test
     ld hl, coll_player_y
     ld a, [hl]
@@ -108,12 +88,8 @@ sys_collision_update::
     jp c, .next_ball
     ; Collision detected: if ball is black, remove player, balls, heart and number (clear all entities).
     ; Otherwise, despawn only this ball.
-    ; Check sprite TID of the colliding ball: components_sprite + 2
-    ld h, CMP_SPRITE_H
-    ld l, e
-    inc l
-    inc l
-    ld a, [hl]
+    ; Check sprite TID of the colliding ball
+    call man_get_sprite_tid_at_e
     cp TID_BALL_BLACK
     jp nz, .check_special
     ; Penalización por pelota negra: -500 (hasta 0000)
@@ -148,17 +124,8 @@ sys_collision_update::
 .despawn_only_ball:
     ; Normal ball: +100 puntos y eliminar la pelota
     call score_add_100
-    ld h, CMP_INFO_H
-    ld l, e
-    res CMP_BIT_USED, [hl]
-    res CMP_BIT_ALIVE, [hl]
-    ld hl, alive_entities
-    dec [hl]
-    ld h, CMP_SPRITE_H
-    ld l, e
-    xor a
-    ld b, SIZEOF_CMP
-    call memset_256
+    ; Usa la rutina genérica de despawn para no duplicar lógica
+    call despawn_entity_at_e
 
 .next_ball:
     ld a, e

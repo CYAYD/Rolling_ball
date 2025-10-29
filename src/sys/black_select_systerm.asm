@@ -19,19 +19,7 @@ black_select_begin::
 ; In:  HL -> temp_entity X byte
 ; Uses: ball_burst_spawn_idx, ball_burst_black_idx
 ; Clobbers: AF, HL
-black_maybe_paint_temp_entity_black::
-    push hl
-    ld hl, ball_burst_spawn_idx
-    ld a, [hl]
-    ld hl, ball_burst_black_idx
-    cp [hl]
-    pop hl
-    jr nz, .no_black
-    inc hl                  ; -> TID
-    ld a, TID_BALL_BLACK
-    ld [hl], a
-.no_black:
-    ret
+; (removed) black_maybe_paint_temp_entity_black was unused
 
 ;; choose_fair_black_index
 ;; In:  B = burst count (b)
@@ -142,15 +130,9 @@ black_maybe_paint_last_entity_black::
     ld hl, ball_burst_black_idx
     cp [hl]
     ret nz
-    ; get last allocated offset
-    ld hl, last_alloc_offset
-    ld a, [hl]
-    ld h, CMP_SPRITE_H
-    ld l, a
-    inc l                 ; -> X
-    inc l                 ; -> TID
+    ; set last entity TID to black via helper
     ld a, TID_BALL_BLACK
-    ld [hl], a
+    call man_set_last_entity_tid
     ret
 
 ; special_select_prepare: choose the special index as the opposite of the black within the burst
@@ -190,16 +172,8 @@ special_maybe_paint_last_entity_special::
     ld hl, ball_burst_special_idx
     cp [hl]
     ret nz
-    ; get last allocated offset
-    ld hl, last_alloc_offset
-    ld a, [hl]
-    ld h, CMP_SPRITE_H
-    ld l, a
-    inc l                 ; -> X
-    inc l                 ; -> TID
+    ; set last entity TID and ATTR via helper (ATTR=0 for OBJ0 palette)
     ld a, TID_BALL_SPECIAL
-    ld [hl], a
-    inc l                 ; -> ATTR
-    xor a                 ; default OBJ0 palette for clarity
-    ld [hl], a
+    ld b, 0
+    call man_set_last_entity_tid_attr
     ret

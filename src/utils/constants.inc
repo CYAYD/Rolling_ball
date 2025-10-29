@@ -89,7 +89,6 @@ DEF SPAWN_FPS_FRAMES      equ $3C    ; 60 frames per second
 DEF SPAWN_BURST_SECONDS   equ 5      ; burst period in seconds
 DEF SPAWN_BURST_COUNT     equ 5      ; balls per burst (spread coverage)
 DEF SPAWN_BLACK_SECONDS   equ 6      ; every ~6 seconds spawn one black ball
-DEF SPAWN_SPECIAL_SECONDS equ 5      ; every ~5 seconds spawn one special ball
 
 ; Limits
 DEF MAX_BALLS             equ 12     ; maximum balls active at once

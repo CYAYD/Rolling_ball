@@ -36,9 +36,6 @@ ball_rand: DS 1
 ; Periodic burst spawner counters
 ball_burst_frame_count: DS 1   ; 0..59 frames
 ball_burst_seconds: DS 1       ; seconds counter
-; independent special ball spawner counters
-special_frame_count: DS 1   ; 0..59 frames
-special_seconds: DS 1       ; seconds counter
 ; last spawn X (for separation)
 ball_last_spawn_x: DS 1
 ; last spawn index for preset table
@@ -81,11 +78,6 @@ man_entity_init::
 	xor a
 	ld [hl], a
 	ld hl, ball_burst_seconds
-	ld [hl], a
-	; init special spawner counters to 0
-	ld hl, special_frame_count
-	ld [hl], a
-	ld hl, special_seconds
 	ld [hl], a
     ; init last spawn x marker to 0xFF (none)
     ld hl, ball_last_spawn_x
@@ -203,3 +195,125 @@ man_entity_for_each::
 			add SIZEOF_CMP
 			ld e, a
 	jr .loop
+
+	; -------------------------------------------------------
+	; man_find_first_by_tag: find first entity with given TAG
+	; In:  A = tag to search (e.g., TAG_PLAYER)
+	; Out: A = 1 if found (E = component offset), A = 0 if not found
+	; Clobbers: DE, HL
+	man_find_first_by_tag::
+		ld c, a               ; C = tag to find
+		ld e, 0               ; start at offset 0
+	.mff_loop:
+		; check VALID_ENTITY
+		ld h, CMP_INFO_H
+		ld l, e
+		ld a, [hl]
+		and VALID_ENTITY
+		cp VALID_ENTITY
+		jr nz, .mff_next
+		; check TAG at +1
+		inc l
+		ld a, [hl]
+		cp c
+		jr z, .mff_found
+	.mff_next:
+		ld a, e
+		add SIZEOF_CMP
+		ld e, a
+		cp SIZEOF_ARRAY_CMP
+		jr nz, .mff_loop
+		xor a                 ; not found -> A=0
+		ret
+	.mff_found:
+		ld a, 1               ; found -> A=1, E holds offset
+		ret
+
+	; -------------------------------------------------------
+	; man_count_by_tag: count entities with a given TAG
+	; In:  A = tag to count (e.g., TAG_BALL)
+	; Out: A = count
+	; Clobbers: BC, DE, HL
+	man_count_by_tag::
+		ld c, a               ; C = tag to count
+		xor a
+		ld d, a               ; D = count = 0
+		ld e, 0               ; start offset
+	.mcbt_loop:
+		ld h, CMP_INFO_H
+		ld l, e
+		ld a, [hl]
+		and VALID_ENTITY
+		cp VALID_ENTITY
+		jr nz, .mcbt_next
+		inc l                 ; info+1 = TAG
+		ld a, [hl]
+		cp c
+		jr nz, .mcbt_next
+		inc d                 ; match -> increment count
+	.mcbt_next:
+		ld a, e
+		add SIZEOF_CMP
+		ld e, a
+		cp SIZEOF_ARRAY_CMP
+		jr nz, .mcbt_loop
+		ld a, d               ; return count in A
+		ret
+
+	; -------------------------------------------------------
+	; man_get_sprite_yx_at_e: read sprite Y,X for entity at offset E
+	; In:  E = component offset
+	; Out: B = Y, C = X
+	; Clobbers: HL
+	man_get_sprite_yx_at_e::
+		ld h, CMP_SPRITE_H
+		ld l, e
+		ld b, [hl]
+		inc l
+		ld c, [hl]
+		ret
+
+	; man_get_sprite_tid_at_e: read sprite TID for entity at offset E
+	; In:  E = component offset
+	; Out: A = TID
+	; Clobbers: HL
+	man_get_sprite_tid_at_e::
+		ld h, CMP_SPRITE_H
+		ld l, e
+		inc l
+		inc l
+		ld a, [hl]
+		ret
+
+	; man_set_last_entity_tid: set TID of last allocated entity
+	; In:  A = TID value
+	; Clobbers: HL
+	man_set_last_entity_tid::
+		push af
+		ld hl, last_alloc_offset
+		ld a, [hl]
+		ld h, CMP_SPRITE_H
+		ld l, a
+		inc l                 ; -> X
+		inc l                 ; -> TID
+		pop af
+		ld [hl], a
+		ret
+
+	; man_set_last_entity_tid_attr: set TID and ATTR of last allocated entity
+	; In:  A = TID value, B = ATTR value
+	; Clobbers: HL
+	man_set_last_entity_tid_attr::
+		push af
+		ld hl, last_alloc_offset
+		ld a, [hl]
+		ld h, CMP_SPRITE_H
+		ld l, a
+		inc l                 ; -> X
+		inc l                 ; -> TID
+		pop af
+		ld [hl], a            ; set TID
+		inc l                 ; -> ATTR
+		ld a, b
+		ld [hl], a            ; set ATTR
+		ret

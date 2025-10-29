@@ -53,7 +53,8 @@ process_spawns::
 	ld hl, ball_burst_base_idx
 	ld [hl], a
 	; compute capacity = MAX_BALLS - current_ball_count
-	call count_balls
+	ld a, TAG_BALL
+	call man_count_by_tag
 	ld c, a                 ; c = current balls
 	ld a, MAX_BALLS
 	sub c
@@ -160,53 +161,6 @@ spawn_ball_random::
 	call special_maybe_paint_last_entity_special
 	ret
 
-;; spawn_special_ball_random: create a special ball (+200) at a random X
-spawn_special_ball_random::
-	;; copy ROM template sc_ball_entity -> temp_entity (12 bytes)
-	ld hl, sc_ball_entity
-	ld de, temp_entity
-	ld b, 12
-	call memcpy_256
-
-	;; patch sprite Y/X at temp_entity+4
-	ld hl, temp_entity
-	ld bc, 4
-	add hl, bc
-	ld [hl], SPAWN_Y_START    ;; Spawn slightly off-screen so it falls in like las otras
-	inc hl                    ;; HL -> X
-	; choose random X in [SPAWN_X_MIN..SPAWN_X_MAX]
-	ld d, SPAWN_X_MIN
-	ld e, SPAWN_X_MAX
-	call rand_range           ; A = random X
-	ld [hl], a                ; write X
-
-	; patch TID to special at temp_entity + 6
-	inc hl                    ;; -> TID
-	ld a, TID_BALL_SPECIAL
-	ld [hl], a
-	; set ATTR = 0 (use default OBJ0 palette) to ensure visibility while we validate graphics
-	inc hl                    ;; -> ATTR
-	xor a
-	ld [hl], a
-
-	;; patch physics at temp_entity + 8 (vy, vx)
-	ld hl, temp_entity
-	ld bc, 8
-	add hl, bc
-	ld a, 2
-	ld [hl], a                ; vy = 2
-	inc hl
-	xor a
-	ld [hl], a                ; vx = 0
-	; write per-entity start delay = 0
-	inc hl
-	xor a
-	ld [hl], a
-
-	;; create entity
-	ld hl, temp_entity
-	call create_one_entity
-	ret
 
 read_input_and_apply::
 	; If game is over, only listen for Start to restart the scene
@@ -275,153 +229,7 @@ read_input_and_apply::
 	;; Button-based spawn removed; only movement handled here
 	ret
 
-;; convert_random_normal_ball_to_special: pick one normal ball (if any) and make it special
-;; Uses two passes: count normals, choose random index k in [0..count-1], then apply
-convert_random_normal_ball_to_special::
-	; First pass: count normal balls (TAG_BALL with TID == TID_BALL)
-	xor a
-	ld c, a                  ; c = count
-	ld e, 0
-.crn_scan:
-	ld h, CMP_INFO_H
-	ld l, e
-	ld a, [hl]
-	and VALID_ENTITY
-	cp VALID_ENTITY
-	jr nz, .crn_next
-	inc l                    ; info+1 = TAG
-	ld a, [hl]
-	cp TAG_BALL
-	jr nz, .crn_next
-	; check TID at sprite+2
-	ld h, CMP_SPRITE_H
-	ld l, e
-	inc l
-	inc l
-	ld a, [hl]
-	cp TID_BALL
-	jr nz, .crn_next
-	inc c
-.crn_next:
-	ld a, e
-	add SIZEOF_CMP
-	ld e, a
-	cp SIZEOF_ARRAY_CMP
-	jr nz, .crn_scan
-	; if no normals, nothing to do
-	ld a, c
-	or a
-	ret z
-	; choose k in [0..c-1]
-	dec a                    ; A = c-1
-	ld d, 0
-	ld e, a
-	call rand_range          ; A = k
-	ld b, a                  ; B = k (target index)
-	; Second pass: find k-th normal and convert
-	ld e, 0
-.crn_scan2:
-	ld h, CMP_INFO_H
-	ld l, e
-	ld a, [hl]
-	and VALID_ENTITY
-	cp VALID_ENTITY
-	jr nz, .crn2_next
-	inc l
-	ld a, [hl]
-	cp TAG_BALL
-	jr nz, .crn2_next
-	ld h, CMP_SPRITE_H
-	ld l, e
-	inc l
-	inc l
-	ld a, [hl]
-	cp TID_BALL
-	jr nz, .crn2_next
-	; this is a normal ball: if B==0, convert it; else decrement B
-	ld a, b
-	or a
-	jr nz, .crn2_dec
-	; convert: set TID to special and ensure ATTR=0 (default palette)
-	ld a, TID_BALL_SPECIAL
-	ld [hl], a               ; write TID
-	inc l                    ; -> ATTR
-	xor a
-	ld [hl], a
-	ret
-.crn2_dec:
-	dec b
-.crn2_next:
-	ld a, e
-	add SIZEOF_CMP
-	ld e, a
-	cp SIZEOF_ARRAY_CMP
-	jr nz, .crn_scan2
-	ret
 
 
 
-;; count_balls: returns the number of active ball entities in A (by TAG)
-count_balls::
-	xor a
-	ld c, a                 ; c = count
-	ld e, 0
-.cb_loop:
-	; check VALID_ENTITY in components_info
-	ld h, CMP_INFO_H
-	ld l, e
-	ld a, [hl]
-	and VALID_ENTITY
-	cp VALID_ENTITY
-	jr nz, .cb_next
-	; check TAG at offset +1
-	ld h, CMP_INFO_H
-	ld l, e
-	inc l
-	ld a, [hl]
-	cp TAG_BALL
-	jr nz, .cb_next
-	inc c
-.cb_next:
-	ld a, e
-	add SIZEOF_CMP
-	ld e, a
-	cp SIZEOF_ARRAY_CMP
-	jr nz, .cb_loop
-	ld a, c
-	ret
-
-
-;; normalize_all_balls_normal: set all balls' sprite TID to TID_BALL
-normalize_all_balls_normal::
-	ld e, 0
-.norm_loop:
-	; check VALID_ENTITY
-	ld h, CMP_INFO_H
-	ld l, e
-	ld a, [hl]
-	and VALID_ENTITY
-	cp VALID_ENTITY
-	jr nz, .norm_next
-	; check TAG == BALL
-	inc l
-	ld a, [hl]
-	cp TAG_BALL
-	jr nz, .norm_next
-	; write TID_BALL at components_sprite + 2
-	ld h, CMP_SPRITE_H
-	ld l, e
-	inc l
-	inc l
-	ld a, TID_BALL
-	ld [hl], a
-.norm_next:
-	ld a, e
-	add SIZEOF_CMP
-	ld e, a
-	cp SIZEOF_ARRAY_CMP
-	jr nz, .norm_loop
-	ret
-
-;; select_random_black_ball: ensure only one black ball by normalizing all,
-;; then pick a random active ball and set its TID to TID_BALL_BLACK
+;; (old helpers removed)

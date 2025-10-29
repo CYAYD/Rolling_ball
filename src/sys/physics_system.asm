@@ -90,20 +90,8 @@ sys_physics_update_one_entity::
 	ld a, [de]
 	cp OFFSCREEN_Y_THRESHOLD
 	jr c, .no_despawn
-	; clear USED|ALIVE bits in components_info
-	ld h, CMP_INFO_H
-	ld l, e
-	res CMP_BIT_USED, [hl]
-	res CMP_BIT_ALIVE, [hl]
-	; decrement alive_entities
-	ld hl, alive_entities
-	dec [hl]
-	; zero sprite component (4 bytes) so OAM hides it
-	ld h, CMP_SPRITE_H
-	ld l, e
-	xor a
-	ld b, SIZEOF_CMP
-	call memset_256
+	; Use common despawn routine to avoid duplicated logic
+	call despawn_entity_at_e
 .no_despawn:
 	ret
 
