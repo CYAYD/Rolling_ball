@@ -174,3 +174,38 @@ score_sub_500::
     ld a, 1
     ld [hl], a
     ret
+
+; Add 200 points (cap at 9999). Does nothing if game is over.
+score_add_200::
+    ; if game over, ignore updates
+    ld hl, game_over_flag
+    ld a, [hl]
+    or a
+    ret nz
+    ; hundreds += 2 with carry to thousands
+    ld hl, score_hundreds
+    ld a, [hl]
+    add 2
+    cp 10
+    jr c, .store_h200
+    ; carry to thousands
+    sub 10
+    ld [hl], a
+    ld hl, score_thousands
+    ld a, [hl]
+    cp 9
+    jr z, .cap200
+    inc a
+    ld [hl], a
+    jr .mark_dirty200
+.cap200:
+    ld a, 9
+    ld [hl], a
+    jr .mark_dirty200
+.store_h200:
+    ld [hl], a
+.mark_dirty200:
+    ld hl, score_dirty
+    ld a, 1
+    ld [hl], a
+    ret

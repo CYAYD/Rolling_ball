@@ -10,6 +10,7 @@ process_spawns::
 	ld a, [hl]
 	cp 0
 	ret nz
+	;; (Independent special spawner removed) — special is now selected per-burst opposite to black
 	;; Every SPAWN_BURST_SECONDS seconds, spawn SPAWN_BURST_COUNT balls
 	;; Mix RNG each frame to avoid periodic repeats
 	ld hl, rng_tick
@@ -66,9 +67,12 @@ process_spawns::
 .have_quota:
 	; choose a fair index in [0..b-1] for the black ball in this burst (no repeats until all used)
 	call black_select_begin    ; preserves B
+	; choose the special index as the opposite of the black within this burst
+	call special_select_prepare ; uses B (burst size) and black index to derive special index
 .burst_loop:
 	push bc
 	call spawn_ball_random
+	; paint black and special if this spawn index matches their chosen indices
 	; increment stagger for next spawn in this burst
 	ld hl, ball_burst_stagger
 	ld a, [hl]
@@ -151,8 +155,57 @@ spawn_ball_random::
 	;; create entity
 	ld hl, temp_entity
 	call create_one_entity
-	; If this spawn is the chosen black, set its TID now in components_sprite
+	; If this spawn is the chosen black or special, paint it now in components_sprite
 	call black_maybe_paint_last_entity_black
+	call special_maybe_paint_last_entity_special
+	ret
+
+;; spawn_special_ball_random: create a special ball (+200) at a random X
+spawn_special_ball_random::
+	;; copy ROM template sc_ball_entity -> temp_entity (12 bytes)
+	ld hl, sc_ball_entity
+	ld de, temp_entity
+	ld b, 12
+	call memcpy_256
+
+	;; patch sprite Y/X at temp_entity+4
+	ld hl, temp_entity
+	ld bc, 4
+	add hl, bc
+	ld [hl], SPAWN_Y_START    ;; Spawn slightly off-screen so it falls in like las otras
+	inc hl                    ;; HL -> X
+	; choose random X in [SPAWN_X_MIN..SPAWN_X_MAX]
+	ld d, SPAWN_X_MIN
+	ld e, SPAWN_X_MAX
+	call rand_range           ; A = random X
+	ld [hl], a                ; write X
+
+	; patch TID to special at temp_entity + 6
+	inc hl                    ;; -> TID
+	ld a, TID_BALL_SPECIAL
+	ld [hl], a
+	; set ATTR = 0 (use default OBJ0 palette) to ensure visibility while we validate graphics
+	inc hl                    ;; -> ATTR
+	xor a
+	ld [hl], a
+
+	;; patch physics at temp_entity + 8 (vy, vx)
+	ld hl, temp_entity
+	ld bc, 8
+	add hl, bc
+	ld a, 2
+	ld [hl], a                ; vy = 2
+	inc hl
+	xor a
+	ld [hl], a                ; vx = 0
+	; write per-entity start delay = 0
+	inc hl
+	xor a
+	ld [hl], a
+
+	;; create entity
+	ld hl, temp_entity
+	call create_one_entity
 	ret
 
 read_input_and_apply::
@@ -220,6 +273,90 @@ read_input_and_apply::
 
 
 	;; Button-based spawn removed; only movement handled here
+	ret
+
+;; convert_random_normal_ball_to_special: pick one normal ball (if any) and make it special
+;; Uses two passes: count normals, choose random index k in [0..count-1], then apply
+convert_random_normal_ball_to_special::
+	; First pass: count normal balls (TAG_BALL with TID == TID_BALL)
+	xor a
+	ld c, a                  ; c = count
+	ld e, 0
+.crn_scan:
+	ld h, CMP_INFO_H
+	ld l, e
+	ld a, [hl]
+	and VALID_ENTITY
+	cp VALID_ENTITY
+	jr nz, .crn_next
+	inc l                    ; info+1 = TAG
+	ld a, [hl]
+	cp TAG_BALL
+	jr nz, .crn_next
+	; check TID at sprite+2
+	ld h, CMP_SPRITE_H
+	ld l, e
+	inc l
+	inc l
+	ld a, [hl]
+	cp TID_BALL
+	jr nz, .crn_next
+	inc c
+.crn_next:
+	ld a, e
+	add SIZEOF_CMP
+	ld e, a
+	cp SIZEOF_ARRAY_CMP
+	jr nz, .crn_scan
+	; if no normals, nothing to do
+	ld a, c
+	or a
+	ret z
+	; choose k in [0..c-1]
+	dec a                    ; A = c-1
+	ld d, 0
+	ld e, a
+	call rand_range          ; A = k
+	ld b, a                  ; B = k (target index)
+	; Second pass: find k-th normal and convert
+	ld e, 0
+.crn_scan2:
+	ld h, CMP_INFO_H
+	ld l, e
+	ld a, [hl]
+	and VALID_ENTITY
+	cp VALID_ENTITY
+	jr nz, .crn2_next
+	inc l
+	ld a, [hl]
+	cp TAG_BALL
+	jr nz, .crn2_next
+	ld h, CMP_SPRITE_H
+	ld l, e
+	inc l
+	inc l
+	ld a, [hl]
+	cp TID_BALL
+	jr nz, .crn2_next
+	; this is a normal ball: if B==0, convert it; else decrement B
+	ld a, b
+	or a
+	jr nz, .crn2_dec
+	; convert: set TID to special and ensure ATTR=0 (default palette)
+	ld a, TID_BALL_SPECIAL
+	ld [hl], a               ; write TID
+	inc l                    ; -> ATTR
+	xor a
+	ld [hl], a
+	ret
+.crn2_dec:
+	dec b
+.crn2_next:
+	ld a, e
+	add SIZEOF_CMP
+	ld e, a
+	cp SIZEOF_ARRAY_CMP
+	jr nz, .crn_scan2
 	ret
 
 

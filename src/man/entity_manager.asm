@@ -36,6 +36,9 @@ ball_rand: DS 1
 ; Periodic burst spawner counters
 ball_burst_frame_count: DS 1   ; 0..59 frames
 ball_burst_seconds: DS 1       ; seconds counter
+; independent special ball spawner counters
+special_frame_count: DS 1   ; 0..59 frames
+special_seconds: DS 1       ; seconds counter
 ; last spawn X (for separation)
 ball_last_spawn_x: DS 1
 ; last spawn index for preset table
@@ -49,6 +52,8 @@ ball_burst_base_idx: DS 1
 ball_burst_spawn_idx: DS 1
 ; per-burst chosen index that will be black among spawned balls
 ball_burst_black_idx: DS 1
+; per-burst chosen index that will be special (opposite to black)
+ball_burst_special_idx: DS 1
 ; mask of used black indices (bits 0..SPAWN_BURST_COUNT-1), to avoid repeats until all used
 ball_black_used_mask: DS 1
 
@@ -77,6 +82,11 @@ man_entity_init::
 	ld [hl], a
 	ld hl, ball_burst_seconds
 	ld [hl], a
+	; init special spawner counters to 0
+	ld hl, special_frame_count
+	ld [hl], a
+	ld hl, special_seconds
+	ld [hl], a
     ; init last spawn x marker to 0xFF (none)
     ld hl, ball_last_spawn_x
     ld a, $FF
@@ -98,6 +108,9 @@ man_entity_init::
 	ld [hl], a
 	; init black index to 0
 	ld hl, ball_burst_black_idx
+	ld [hl], a
+	; init special index to 0
+	ld hl, ball_burst_special_idx
 	ld [hl], a
 	; init black used mask to 0
 	ld hl, ball_black_used_mask

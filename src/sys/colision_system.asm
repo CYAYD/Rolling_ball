@@ -115,7 +115,7 @@ sys_collision_update::
     inc l
     ld a, [hl]
     cp TID_BALL_BLACK
-    jp nz, .despawn_only_ball
+    jp nz, .check_special
     ; Penalización por pelota negra: -500 (hasta 0000)
     call score_sub_500
     ; --- Black ball hit: lose a heart, or game over if only one heart remains ---
@@ -130,6 +130,14 @@ sys_collision_update::
     push de                  ; preserve current ball entity offset in E
     call remove_one_heart_pair
     pop de
+    call despawn_entity_at_e
+    ret
+
+.check_special:
+    ; Special ball: +200 puntos y eliminar la pelota
+    cp TID_BALL_SPECIAL
+    jr nz, .despawn_only_ball
+    call score_add_200
     call despawn_entity_at_e
     ret
 

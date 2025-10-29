@@ -45,6 +45,7 @@ DEF P1_BTN_START      equ %00001000
 DEF VRAM_TILE_ONE     equ VRAM_TILE_START + ($60 * VRAM_TILE_SIZE) ; $60/$61
 DEF VRAM_TILE_BALL    equ VRAM_TILE_START + ($62 * VRAM_TILE_SIZE) ; $62/$63
 DEF VRAM_TILE_BALL_BLACK equ VRAM_TILE_START + ($64 * VRAM_TILE_SIZE) ; $64/$65
+DEF VRAM_TILE_BALL_SPECIAL equ VRAM_TILE_START + ($6C * VRAM_TILE_SIZE) ; $6C/$6D
 DEF VRAM_TILE_HEART   equ VRAM_TILE_START + ($66 * VRAM_TILE_SIZE) ; $66/$67
 DEF VRAM_TILE_HEART_R equ VRAM_TILE_START + ($68 * VRAM_TILE_SIZE) ; $68/$69
 
@@ -52,6 +53,7 @@ DEF VRAM_TILE_HEART_R equ VRAM_TILE_START + ($68 * VRAM_TILE_SIZE) ; $68/$69
 DEF TID_ONE           equ $60
 DEF TID_BALL          equ $62
 DEF TID_BALL_BLACK    equ $64
+DEF TID_BALL_SPECIAL  equ $6C
 DEF TID_HEART         equ $66
 DEF TID_HEART_R       equ $68
 
@@ -87,6 +89,7 @@ DEF SPAWN_FPS_FRAMES      equ $3C    ; 60 frames per second
 DEF SPAWN_BURST_SECONDS   equ 5      ; burst period in seconds
 DEF SPAWN_BURST_COUNT     equ 5      ; balls per burst (spread coverage)
 DEF SPAWN_BLACK_SECONDS   equ 6      ; every ~6 seconds spawn one black ball
+DEF SPAWN_SPECIAL_SECONDS equ 5      ; every ~5 seconds spawn one special ball
 
 ; Limits
 DEF MAX_BALLS             equ 12     ; maximum balls active at once
@@ -134,4 +137,3 @@ DEF SCORE_ROW             equ 0
 DEF SCORE_COL             equ 1
 ; Column where the countdown seconds start (after 4 zeros and 2 spaces)
 DEF SCORE_SECS_COL        equ SCORE_COL + 6
-

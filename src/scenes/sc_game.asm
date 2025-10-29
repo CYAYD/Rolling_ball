@@ -62,6 +62,11 @@ black_ball::
    DB $3C,$3C,$7E,$7E,$FF,$FF,$FF,$FF
    DB $FF,$FF,$FF,$FF,$7E,$7E,$3C,$3C
 
+; Special (+200) ball: 8x8 tile
+special_ball::
+   DB $3C,$3C,$42,$5A,$81,$81,$81,$DB
+   DB $81,$DB,$81,$81,$42,$5A,$3C,$3C
+
 ; A blank 8x8 tile (all zeros) to use as the lower half in 8x16 mode
 blank_tile::
    DB $00,$00,$00,$00,$00,$00,$00,$00

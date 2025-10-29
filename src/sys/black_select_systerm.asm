@@ -152,3 +152,54 @@ black_maybe_paint_last_entity_black::
     ld a, TID_BALL_BLACK
     ld [hl], a
     ret
+
+; special_select_prepare: choose the special index as the opposite of the black within the burst
+; In:  B = burst count (b)
+; Uses: ball_burst_black_idx
+; Out: ball_burst_special_idx = (black_idx + floor(b/2)) % b
+; Clobbers: AF, HL
+special_select_prepare::
+    push bc
+    ; read black index in A
+    ld hl, ball_burst_black_idx
+    ld a, [hl]
+    ; compute half = b >> 1 in C
+    pop bc
+    ld c, b
+    srl c
+    ; A = black_idx + half
+    add a, c
+.mod_b:
+    cp b
+    jr c, .store
+    sub b
+    jr .mod_b
+.store:
+    ld hl, ball_burst_special_idx
+    ld [hl], a
+    ret
+
+; special_maybe_paint_last_entity_special: if current spawn index matches special index,
+; paint the last allocated entity's sprite TID to special in components_sprite.
+; Uses: ball_burst_spawn_idx, ball_burst_special_idx, last_alloc_offset
+; Clobbers: AF, HL
+special_maybe_paint_last_entity_special::
+    ; compare spawn idx vs chosen special idx
+    ld hl, ball_burst_spawn_idx
+    ld a, [hl]
+    ld hl, ball_burst_special_idx
+    cp [hl]
+    ret nz
+    ; get last allocated offset
+    ld hl, last_alloc_offset
+    ld a, [hl]
+    ld h, CMP_SPRITE_H
+    ld l, a
+    inc l                 ; -> X
+    inc l                 ; -> TID
+    ld a, TID_BALL_SPECIAL
+    ld [hl], a
+    inc l                 ; -> ATTR
+    xor a                 ; default OBJ0 palette for clarity
+    ld [hl], a
+    ret

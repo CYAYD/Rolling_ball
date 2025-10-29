@@ -9,6 +9,11 @@ MACRO SET_OBP1
    	ld [rOBP1], a
 ENDM
 
+MACRO SET_OBP2
+	ld a, \1
+   	ld [rOBP2], a
+ENDM
+
 
 MACRO MEMCPY_256
 	ld hl, \1

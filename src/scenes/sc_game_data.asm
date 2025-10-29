@@ -64,6 +64,8 @@ sc_game_init::
    .init_palettes_and_tiles
    SET_BGP DEFAULT_PAL
       SET_OBP1 DEFAULT_PAL
+      ; Use same palette on OBJ1 to avoid unexpected color mapping while we validate graphics
+      SET_OBP2 DEFAULT_PAL
    MEMCPY_256 sc_game_fence_tiles, VRAM_TILE_20, 2*VRAM_TILE_SIZE
 
 
@@ -92,8 +94,12 @@ sc_game_init::
    ; Pelota normal (8x16): arriba = ball_sprite, abajo = blank
    MEMCPY_256 ball_sprite, VRAM_TILE_BALL, VRAM_TILE_SIZE
    MEMCPY_256 blank_tile, VRAM_TILE_BALL + VRAM_TILE_SIZE, VRAM_TILE_SIZE
-   ; Pelota negra (8x16): usar el mismo tile arriba y abajo para que se vea "entera"
+   ; Pelota negra (8x16): usa tile arriba y abajo en blanco para que no se vea como 2 apiladas
    MEMCPY_256 black_ball, VRAM_TILE_BALL_BLACK, VRAM_TILE_SIZE
+   MEMCPY_256 blank_tile, VRAM_TILE_BALL_BLACK + VRAM_TILE_SIZE, VRAM_TILE_SIZE
+   ; Pelota especial (+200) (8x16): solo usamos tile arriba y abajo en blanco para que se vea como 8x8
+   MEMCPY_256 special_ball, VRAM_TILE_BALL_SPECIAL, VRAM_TILE_SIZE
+   MEMCPY_256 blank_tile, VRAM_TILE_BALL_SPECIAL + VRAM_TILE_SIZE, VRAM_TILE_SIZE
    
    ; Corazón 16x16 usando dos sprites 8x16: izquierda ($66,$67) y derecha ($68,$69)
    ; Izquierda: top-left (0..15), bottom-left (16..31)
