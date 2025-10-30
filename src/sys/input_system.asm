@@ -169,7 +169,7 @@ read_input_and_apply::
 	cp 0
 	jr z, .normal_input
 	; Select buttons group (P15 low)
-	ld a, %00010000    ; 0x10 = select buttons (A,B,Select,Start)
+	ld a, P1_SELECT_BUTTONS    ; select buttons (A,B,Select,Start)
 	ld [rP1], a
 	ld a, [rP1]
 	cpl
@@ -184,12 +184,12 @@ read_input_and_apply::
 	;; Read P1 register (note: Game Boy P1 has bits cleared when pressed; here
 	;; we expect the hardware wired such that pressed bits will be 0. Depending
 	;; on your platform you may need to invert. We'll read and invert to get 1=pressed.
-	;; Read directions group: select directions by writing 0x20
-	ld a, %00100000    ; 0x20 = select directions (P14)
+	;; Read directions group: select directions by writing selector
+	ld a, P1_SELECT_DPAD       ; select directions (P14 low)
 	ld [rP1], a
 	ld a, [rP1]
 	cpl
-	and %00001111
+	and P1_LOW_NIBBLE
 	ld b, a
 	ld d, a    ;; save directions mask in D so we don't lose it when reading player pos
 
@@ -224,12 +224,5 @@ read_input_and_apply::
 	ld c, -1
 .move_no_left:
 	ld [hl], c
-
-
-	;; Button-based spawn removed; only movement handled here
+	
 	ret
-
-
-
-
-;; (old helpers removed)

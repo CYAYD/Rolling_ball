@@ -34,6 +34,12 @@ DEF P1_LEFT           equ %00000010
 DEF P1_UP             equ %00000100
 DEF P1_DOWN           equ %00001000
 
+;; P1 selector bits to choose which group to read (write to rP1)
+;; Write bit low (0) to select that group (hardware inverts)
+DEF P1_SELECT_BUTTONS equ %00010000   ; select A,B,Select,Start group (P15 low)
+DEF P1_SELECT_DPAD    equ %00100000   ; select Right,Left,Up,Down group (P14 low)
+DEF P1_LOW_NIBBLE     equ %00001111   ; mask to keep only low 4 bits
+
 ;; P1 button group masks (after selecting the button group and inverting):
 ;; bit0 = A, bit1 = B, bit2 = Select, bit3 = Start (pressed=1)
 DEF P1_BTN_A          equ %00000001
