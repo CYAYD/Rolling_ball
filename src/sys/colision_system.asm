@@ -50,9 +50,9 @@ sys_collision_update::
 
 ; Define colisiones del jugador con la pared
 DEF PLAYER_MIN_X    EQU 16    ; borde izquierdo (píxeles)
-DEF PLAYER_MAX_X    EQU 149   ; borde derecho (píxeles)
+DEF PLAYER_MAX_X    EQU 152   ; borde derecho (píxeles)
 DEF PLAYER_MIN_Y    EQU 16    ; borde superior (píxeles)
-DEF PLAYER_MAX_Y    EQU 144   ; borde inferior (píxeles)
+DEF PLAYER_MAX_Y    EQU 136   ; borde inferior (píxeles)
 
     ; Recuperar Y cached
     ld hl, coll_player_y
