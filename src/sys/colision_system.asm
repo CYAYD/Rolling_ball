@@ -45,6 +45,103 @@ sys_collision_update::
 
     ; Iterate balls and test AABB with player
     ld e, 0
+
+
+
+; Define colisiones del jugador con la pared
+DEF PLAYER_MIN_X    EQU 16    ; borde izquierdo (píxeles)
+DEF PLAYER_MAX_X    EQU 149   ; borde derecho (píxeles)
+DEF PLAYER_MIN_Y    EQU 16    ; borde superior (píxeles)
+DEF PLAYER_MAX_Y    EQU 144   ; borde inferior (píxeles)
+
+    ; Recuperar Y cached
+    ld hl, coll_player_y
+    ld a, [hl]
+
+    ; Si Y < PLAYER_MIN_Y -> fijar a PLAYER_MIN_Y y anular vy
+    cp PLAYER_MIN_Y
+    jr nc, .check_y_max     ; si A >= MIN, saltar
+    ld a, PLAYER_MIN_Y
+    ; escribir nuevo Y en sprite (CMP_SPRITE_H + E)
+    ld h, CMP_SPRITE_H
+    ld l, e
+    ld [hl], a
+    ; anular vy en components_physics (byte 0)
+    ld hl, components_physics
+    xor a
+    ld [hl], a
+    jr .after_y_check
+
+.check_y_max:
+    ; Si Y > PLAYER_MAX_Y -> fijar a PLAYER_MAX_Y y anular vy
+    ld hl, coll_player_y
+    ld a, [hl]
+    cp PLAYER_MAX_Y
+    jr c, .after_y_check   ; si A < MAX, OK
+    jr z, .after_y_check   ; si == MAX, OK
+    ; si A > MAX:
+    ld a, PLAYER_MAX_Y
+    ld h, CMP_SPRITE_H
+    ld l, e
+    ld [hl], a
+    ld hl, components_physics
+    xor a
+    ld [hl], a
+
+.after_y_check:
+
+    ; Recuperar X cached
+    ld hl, coll_player_x
+    ld a, [hl]
+
+    ; Si X < PLAYER_MIN_X -> fijar y anular vx
+    cp PLAYER_MIN_X
+    jr nc, .check_x_max    ; si A >= MIN, saltar
+    ld a, PLAYER_MIN_X
+    ld h, CMP_SPRITE_H
+    ld l, e
+    inc l                  ; X offset = sprite base + 1
+    ld [hl], a
+    ; anular vx en components_physics (byte 1)
+    ld hl, components_physics
+    inc hl                  ; vx está en siguiente byte tras vy
+    xor a
+    ld [hl], a
+    jr .after_x_check
+
+.check_x_max:
+    ld hl, coll_player_x
+    ld a, [hl]
+    cp PLAYER_MAX_X
+    jr c, .after_x_check   ; si A < MAX, OK
+    jr z, .after_x_check
+    ; si A > MAX:
+    ld a, PLAYER_MAX_X
+    ld h, CMP_SPRITE_H
+    ld l, e
+    inc l
+    ld [hl], a
+    ld hl, components_physics
+    inc hl
+    xor a
+    ld [hl], a
+
+.after_x_check:
+    ; Actualiza las caches coll_player_x/y con los valores posiblemente corregidos
+    ld h, CMP_SPRITE_H
+    ld l, e
+    ld a, [hl]
+    ld hl, coll_player_y
+    ld [hl], a
+    ld h, CMP_SPRITE_H
+    ld l, e
+    inc l
+    ld a, [hl]
+    ld hl, coll_player_x
+    ld [hl], a
+
+
+
 .balls_loop:
     ld h, CMP_INFO_H
     ld l, e
